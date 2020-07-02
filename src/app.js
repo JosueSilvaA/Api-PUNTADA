@@ -1,7 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-
+var database = require('./connection/connection');
+database();
 /* Import Rutas */
 
 
