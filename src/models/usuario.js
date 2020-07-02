@@ -36,7 +36,8 @@ const usuario = new mongoose.Schema({
     rol:{
         type:Number,
         required:true,
-        trim:true
+        trim:true,
+        default:2
     },
     identidad:{
         type:String,

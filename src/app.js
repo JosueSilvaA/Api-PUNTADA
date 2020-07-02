@@ -4,7 +4,7 @@ const cors = require('cors')
 var database = require('./connection/connection');
 database();
 /* Import Rutas */
-
+const usuariosRouter = require('./routes/usuarios');
 
 
 //express
@@ -29,6 +29,7 @@ app.get('/', (req, res) =>{
     res.send('Server Api-LaPuntada')
 })
 
+app.use('/api/usuario',usuariosRouter);
 
 //Cacth error on routes
 app.use((req, res, next) => {
