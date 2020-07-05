@@ -29,7 +29,7 @@ app.get('/', (req, res) =>{
     res.send('Server Api-LaPuntada')
 })
 
-app.use('/api/usuario',usuariosRouter);
+app.use('/api/usuario', cors(), usuariosRouter);
 
 //Cacth error on routes
 app.use((req, res, next) => {
