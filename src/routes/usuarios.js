@@ -40,8 +40,7 @@ router.post('/login', function(req, res){
                 err: error
              })
         }
-       
-        if (!result) {
+        if (!result || (result.contrasena != req.body.contrasena)) {
             return res.status(400).json({
               ok: false,
               err: {
