@@ -6,7 +6,7 @@ const usuario = require('../models/usuario');
 
 // servicio agregar usuario
 
-router.post('/',function(req,res){
+router.post('/register', async function(req,res){
     let u = new usuario (
         {
             nombres:req.body.nombres,
@@ -22,6 +22,9 @@ router.post('/',function(req,res){
             conexiones:[]
         }
     );
+    
+    //encrypt password
+    u.contrasena = await u.encryptPassword(req.body.contrasena)
 
     u.save().then(result=>{
         res.send({codigoResultado:1,mensaje:'registro guardado',usuarioGuardado:result});
@@ -34,15 +37,23 @@ router.post('/',function(req,res){
 
 router.post('/login', function(req, res){
     var result = Result.createResult();
-    usuario.findOne({ usuario: req.body.usuario}, (error, usuario)=> {
+    usuario.findOne({ usuario: req.body.usuario }, async (error, usuario)=> {
         if(error){
             result.Error = error
             return res.json(result)
         }
-        if (!usuario || (usuario.contrasena != req.body.contrasena)) {
+        
+        //bcrypt        
+        let comparePass = false
+        if (usuario){
+            comparePass = await usuario.matchPassword({ password: req.body.contrasena, encryptPassword: usuario.contrasena })
+        } 
+                // usuario.contrasena != req.body.contrasena
+        if (!usuario || (!comparePass)) {
             result.Error = 'Usuario o contraseña incorrecto'
             return res.json(result)
          }
+        
          result.Response = 'Inicio de sesión exitoso'
          return res.json(result)
     })
