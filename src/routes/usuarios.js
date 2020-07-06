@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var Result = require('../helpers/result')
 const usuario = require('../models/usuario');
 
 
@@ -32,28 +33,18 @@ router.post('/',function(req,res){
 });
 
 router.post('/login', function(req, res){
-    console.log(req.body)
-    usuario.findOne({ usuario: req.body.usuario}, (error, result)=> {
+    var result = Result.createResult();
+    usuario.findOne({ usuario: req.body.usuario}, (error, usuario)=> {
         if(error){
-            return res.status(500).json({
-                ok: false,
-                err: error
-             })
+            result.Error = error
+            return res.json(result)
         }
-        if (!result || (result.contrasena != req.body.contrasena)) {
-            return res.status(400).json({
-              ok: false,
-              err: {
-                  message: "Usuario o contraseña incorrectos"
-              }
-           })
+        if (!usuario || (usuario.contrasena != req.body.contrasena)) {
+            result.Error = 'Usuario o contraseña incorrecto'
+            return res.json(result)
          }
-         return res.status(200).json({
-            ok: true,
-            data: {
-                message: "Usuario correcto"
-            }
-         })
+         result.Response = 'Inicio de sesión exitoso'
+         return res.json(result)
     })
 
 })
