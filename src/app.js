@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const jwtKey = require('./configs/jwtKey')
 var database = require('./connection/connection');
 database();
 /* Import Rutas */
@@ -15,6 +16,8 @@ app.use(cors())
 
 //Server port
 app.set('port', process.env.PORT || 3000)
+app.set('key', jwtKey.key)
+app.get('key')
 
 
 

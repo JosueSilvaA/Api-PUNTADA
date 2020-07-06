@@ -1,7 +1,14 @@
 var express = require('express');
+const createJWT = require('../configs/jwtConfig')
+const autenticationToken = require('../middlewares/autenticationJWT')
 var router = express.Router();
 var Result = require('../helpers/result')
 const usuario = require('../models/usuario');
+
+//prueba para usar autenticación con jwt
+router.post('/prueba', autenticationToken, (req, res) => {
+    res.send('hi')
+})
 
 
 // servicio agregar usuario
@@ -35,6 +42,7 @@ router.post('/register', async function(req,res){
     });
 });
 
+
 router.post('/login', function(req, res){
     var result = Result.createResult();
     usuario.findOne({ usuario: req.body.usuario }, async (error, usuario)=> {
@@ -53,7 +61,13 @@ router.post('/login', function(req, res){
             result.Error = 'Usuario o contraseña incorrecto'
             return res.json(result)
          }
-        
+        //Create Token
+        const token = await createJWT({
+            usuario: usuario.usuario,
+            id: usuario._id,
+            rol: usuario.rol
+        })
+        result.Items = {token: token}
          result.Response = 'Inicio de sesión exitoso'
          return res.json(result)
     })
