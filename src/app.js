@@ -6,13 +6,13 @@ var database = require('./connection/connection');
 database();
 /* Import Rutas */
 const usuariosRouter = require('./routes/usuarios');
-
+const rolesRouter = require('./routes/roles');
 
 //express
 const app = express()
 
 //cors
-app.use(cors())
+app.use(cors());
 
 //Server port
 app.set('port', process.env.PORT || 3000)
@@ -32,7 +32,9 @@ app.get('/', (req, res) =>{
     res.send('Server Api-LaPuntada')
 })
 
-app.use('/api/usuario', cors(), usuariosRouter);
+app.use('/api/usuario',usuariosRouter);
+app.use('/api/rol',rolesRouter);
+
 
 //Cacth error on routes
 app.use((req, res, next) => {

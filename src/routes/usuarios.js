@@ -1,12 +1,12 @@
 var express = require('express');
-const createJWT = require('../configs/jwtConfig')
-const autenticationToken = require('../middlewares/autenticationJWT')
-var router = express.Router();
-var Result = require('../helpers/result')
-const usuario = require('../models/usuario');
+const CreateJWT = require('../configs/jwtConfig')
+const AutenticationToken = require('../middlewares/autenticationJWT')
+const router = express.Router();
+const Result = require('../helpers/result')
+const Usuario = require('../models/usuario');
 
 //prueba para usar autenticación con jwt
-router.post('/prueba', autenticationToken, (req, res) => {
+router.post('/prueba', AutenticationToken, (req, res) => {
     res.send('hi')
 })
 
@@ -14,7 +14,7 @@ router.post('/prueba', autenticationToken, (req, res) => {
 // servicio agregar usuario
 
 router.post('/register', async function(req,res){
-    let u = new usuario (
+    let u = new Usuario (
         {
             nombres:req.body.nombres,
             apellido:req.body.apellido,
@@ -32,23 +32,27 @@ router.post('/register', async function(req,res){
     
     //encrypt password
     u.contrasena = await u.encryptPassword(req.body.contrasena)
+    let result = Result.createResult();
 
-    u.save().then(result=>{
-        res.send({codigoResultado:1,mensaje:'registro guardado',usuarioGuardado:result});
-        res.end();
+    u.save().then(response =>{
+        result.Error = false;
+        result.Items = response;
+        result.Response = 200;
+        res.send(result);
     }).catch(error=>{
-        res.send(error);
-        res.end(); 
+        result.Error = error;
+        result.Success = false;
+        res.send(result);
     });
 });
 
 
 router.post('/login', function(req, res){
     var result = Result.createResult();
-    usuario.findOne({ usuario: req.body.usuario }, async (error, usuario)=> {
+    Usuario.findOne({ usuario: req.body.usuario }, async (error, usuario)=> {
         if(error){
-            result.Error = error
-            return res.json(result)
+            result.Error = error;
+            return res.json(result);
         }
         
         //bcrypt        
@@ -59,17 +63,18 @@ router.post('/login', function(req, res){
                 // usuario.contrasena != req.body.contrasena
         if (!usuario || (!comparePass)) {
             result.Error = 'Usuario o contraseña incorrecto'
-            return res.json(result)
+            return res.json(result);
          }
         //Create Token
-        const token = await createJWT({
+        const token = await CreateJWT({
             usuario: usuario.usuario,
             id: usuario._id,
             rol: usuario.rol
-        })
+        });
+
         result.Items = {token: token}
-         result.Response = 'Inicio de sesión exitoso'
-         return res.json(result)
+        result.Response = 'Inicio de sesión exitoso'
+        return res.json(result);
     })
 
 })
