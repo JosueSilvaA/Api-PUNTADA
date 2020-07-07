@@ -36,7 +36,8 @@ const usuario = new mongoose.Schema({
     },
     rol:{
         type:mongoose.SchemaTypes.ObjectId,
-        required:true
+        required:true,
+        default:'5f03939918b29923b034c7be'
     },
     identidad:{
         type:String,
@@ -50,6 +51,11 @@ const usuario = new mongoose.Schema({
         trim:true,
         unique:true
     },
+    imgUsuario:{
+        type:String,
+        trim:true,
+        default:'https://img.icons8.com/dusk/64/000000/user-male.png'
+    },
     estado:{
         type:Boolean,
         trim:true,
@@ -59,7 +65,10 @@ const usuario = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    conexiones:mongoose.SchemaTypes.Array
+    conexiones:{
+        type:mongoose.SchemaTypes.Array,
+        default:[]
+    }
 });
 
 
