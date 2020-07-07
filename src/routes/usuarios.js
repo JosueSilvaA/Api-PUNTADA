@@ -2,8 +2,10 @@ var express = require('express');
 const CreateJWT = require('../configs/jwtConfig')
 const AutenticationToken = require('../middlewares/autenticationJWT')
 const router = express.Router();
-const Result = require('../helpers/result')
+const Result = require('../helpers/result');
 const Usuario = require('../models/usuario');
+const { response } = require('express');
+const { Mongoose } = require('mongoose');
 
 //prueba para usar autenticación con jwt
 router.post('/prueba', AutenticationToken, (req, res) => {
@@ -13,7 +15,7 @@ router.post('/prueba', AutenticationToken, (req, res) => {
 
 // servicio agregar usuario
 
-router.post('/register', async function(req,res){
+router.post('/registroUsuario', async function(req,res){
     let u = new Usuario (
         {
             nombres:req.body.nombres,
@@ -22,7 +24,6 @@ router.post('/register', async function(req,res){
             direccion:req.body.direccion,
             correo:req.body.correo,
             contrasena:req.body.contrasena,
-            rol:req.body.rol,
             identidad:req.body.identidad,
             telefono:req.body.telefono,
             estado:req.body.estado,
@@ -46,7 +47,7 @@ router.post('/register', async function(req,res){
     });
 });
 
-
+// lOGIN USUARIO
 router.post('/login', function(req, res){
     var result = Result.createResult();
     Usuario.findOne({ usuario: req.body.usuario }, async (error, usuario)=> {
@@ -80,5 +81,36 @@ router.post('/login', function(req, res){
 })
 
 
+// OBTENER USUARIOS
+
+router.get('/obtenerUsuarios',function (req,res){
+    let result = Result.createResult();
+    Usuario.find({}).then(response=>{
+        result.Error = false;
+        result.Response = 200;
+        result.Items = response;
+        res.send(result);
+    }).catch(err=>{
+        result.Error = err;
+        result.Response = 500;
+        res.send(result);
+    });
+});
+
+// Obtener Usuarios Por campos solicitados
+
+router.get('/infoUsuarios',function (req,res){
+    let result = Result.createResult();
+    Usuario.find({},{nombres:true,rol:true,conexiones:true}).then(response=>{
+        result.Error = false;
+        result.Response = 200;
+        result.Items = response;
+        res.send(result);
+    }).catch(err=>{
+        result.Error = err;
+        result.Response = 500;
+        res.send(result);
+    });
+});
 
 module.exports = router;
