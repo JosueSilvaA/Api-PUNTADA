@@ -13,59 +13,58 @@ router.post('/prueba', AutenticationToken, (req, res) => {
 })
 
 
-// servicio agregar usuario
+// Registrar usuario
 
-router.post('/registroUsuario', async function(req,res){
-    let u = new Usuario (
-        {
-            nombres:req.body.nombres,
-            apellido:req.body.apellido,
-            usuario:req.body.usuario,
-            direccion:req.body.direccion,
-            correo:req.body.correo,
-            contrasena:req.body.contrasena,
-            identidad:req.body.identidad,
-            telefono:req.body.telefono,
-            estado:req.body.estado,
-            conexiones:[]
-        }
-    );
-    
+router.post('/registroUsuario', async function(req, res) {
+    let u = new Usuario({
+        nombres: req.body.nombres,
+        apellido: req.body.apellido,
+        usuario: req.body.usuario,
+        direccion: req.body.direccion,
+        correo: req.body.correo,
+        contrasena: req.body.contrasena,
+        identidad: req.body.identidad,
+        telefono: req.body.telefono,
+        estado: req.body.estado,
+        conexiones: []
+    });
+
     //encrypt password
     u.contrasena = await u.encryptPassword(req.body.contrasena)
     let result = Result.createResult();
 
-    u.save().then(response =>{
+    u.save().then(response => {
         result.Error = false;
         result.Items = response;
-        result.Response = 200;
+        result.Response = 'Usuario registrado con exito';
         res.send(result);
-    }).catch(error=>{
+    }).catch(error => {
         result.Error = error;
         result.Success = false;
+        result.Response = 'Ocurrio un error';
         res.send(result);
     });
 });
 
-// lOGIN USUARIO
-router.post('/login', function(req, res){
+// login usuario
+router.post('/login', function(req, res) {
     var result = Result.createResult();
-    Usuario.findOne({ usuario: req.body.usuario }, async (error, usuario)=> {
-        if(error){
+    Usuario.findOne({ usuario: req.body.usuario }, async(error, usuario) => {
+        if (error) {
             result.Error = error;
             return res.json(result);
         }
-        
+
         //bcrypt        
         let comparePass = false
-        if (usuario){
+        if (usuario) {
             comparePass = await usuario.matchPassword({ password: req.body.contrasena, encryptPassword: usuario.contrasena })
-        } 
-                // usuario.contrasena != req.body.contrasena
+        }
+        // usuario.contrasena != req.body.contrasena
         if (!usuario || (!comparePass)) {
             result.Error = 'Usuario o contraseña incorrecto'
             return res.json(result);
-         }
+        }
         //Create Token
         const token = await CreateJWT({
             usuario: usuario.usuario,
@@ -73,7 +72,7 @@ router.post('/login', function(req, res){
             rol: usuario.rol
         });
 
-        result.Items = {token: token}
+        result.Items = { token: token }
         result.Response = 'Inicio de sesión exitoso'
         return res.json(result);
     })
@@ -81,34 +80,34 @@ router.post('/login', function(req, res){
 })
 
 
-// OBTENER USUARIOS
+// Obtener usuarios
 
-router.get('/obtenerUsuarios',function (req,res){
+router.get('/obtenerUsuarios', function(req, res) {
     let result = Result.createResult();
-    Usuario.find({}).then(response=>{
+    Usuario.find({}).then(response => {
         result.Error = false;
-        result.Response = 200;
+        result.Response = 'Usuarios con informacion completa';
         result.Items = response;
         res.send(result);
-    }).catch(err=>{
+    }).catch(err => {
         result.Error = err;
-        result.Response = 500;
+        result.Response = 'Ocurrio un error';
         res.send(result);
     });
 });
 
-// Obtener Usuarios Por campos solicitados
+// Obtener usuarios por campos solicitados
 
-router.get('/infoUsuarios',function (req,res){
+router.get('/infoUsuarios', function(req, res) {
     let result = Result.createResult();
-    Usuario.find({}, { nombres: true, apellido: true, usuario:true, rol: true, imgUsuario:true, estado:true,conexiones:true}).then(response=>{
+    Usuario.find({}, { nombres: true, apellido: true, usuario: true, rol: true, imgUsuario: true, estado: true, conexiones: true }).then(response => {
         result.Error = false;
-        result.Response = 200;
+        result.Response = 'Usuarios con informacion mas importante';
         result.Items = response;
         res.send(result);
-    }).catch(err=>{
+    }).catch(err => {
         result.Error = err;
-        result.Response = 500;
+        result.Response = 'Ocurrio un error';
         res.send(result);
     });
 });
