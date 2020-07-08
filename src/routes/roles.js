@@ -69,15 +69,16 @@ router.post('/:idRol/registroPrivilegio', function(req, res) {
             }
         })
         .then(response => {
-            console.log(response)
-            if (response.n = 0) {
-                console.log('entro')
-                result.Error = 'Rol Invalido'
-                res.send(result)
-            } else {
-                result.Error = false
-                result.Response = 'Privilegio registrado con exito'
-                result.Items = response
+            if(response.nModified === 1 && response.n === 1){
+                console.log('ENTRO AQUI')
+                result.Success = true;
+                result.Error = false;
+                result.Response = 'Privilegio registrado con exito';
+                res.send(result);
+            }else{
+                result.Error = 'Datos Invalidos'
+                result.Success = false
+                result.Items = [];
                 res.send(result)
             }
         })
