@@ -101,7 +101,7 @@ router.get('/obtenerUsuarios',function (req,res){
 
 router.get('/infoUsuarios',function (req,res){
     let result = Result.createResult();
-    Usuario.find({},{nombres:true,apellido:true,rol:true,conexiones:true}).then(response=>{
+    Usuario.find({}, { nombres: true, apellido: true, usuario:true, rol: true, imgUsuario:true, estado:true,conexiones:true}).then(response=>{
         result.Error = false;
         result.Response = 200;
         result.Items = response;
