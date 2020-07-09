@@ -112,16 +112,25 @@ router.get('/infoUsuarios', function(req, res) {
 
 router.put('/:idUsuario/cambiarEstado', function(req, res) {
     let result = Result.createResult()
-    Usuario.update({
+    Usuario.updateOne({
             _id: mongoose.Types.ObjectId(req.params.idUsuario)
         }, {
             estado: req.body.estado
         })
         .then(response => {
-            result.Error = false
-            result.Response = 'Se cambio el estado del usuario'
-            result.Items = response
-            res.send(result)
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se cambio el estado del usuario'
+                res.send(result)
+            } else if (response.nModified === 0 && response.n === 1) {
+                result.Error = false
+                result.Response = 'No se realizo ningun cambio'
+                res.send(result)
+            } else {
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
         })
         .catch(err => {
             result.Error = err
@@ -129,5 +138,37 @@ router.put('/:idUsuario/cambiarEstado', function(req, res) {
             res.send(result)
         });
 })
+
+// Cambiar rol de un usuario
+
+router.put('/:idUsuario/cambiarRol', function(req, res) {
+    let result = Result.createResult();
+    Usuario.updateOne({
+            _id: mongoose.Types.ObjectId(req.params.idUsuario)
+        }, {
+            rol: mongoose.Types.ObjectId(req.body.rol)
+        })
+        .then(response => {
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se cambio el estado del usuario'
+                res.send(result)
+            } else if (response.nModified === 0 && response.n === 1) {
+                result.Error = false
+                result.Response = 'No se realizo ningun cambio'
+                res.send(result)
+            } else {
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
+});
+
 
 module.exports = router
