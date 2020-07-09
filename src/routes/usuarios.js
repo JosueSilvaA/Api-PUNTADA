@@ -170,5 +170,41 @@ router.put('/:idUsuario/cambiarRol', function(req, res) {
         });
 });
 
+// Editar Usuario
+
+router.put('/:idUsuario/editarUsuario', function(req, res) {
+    let result = Result.createResult();
+    Usuario.updateOne({
+            _id: mongoose.Types.ObjectId(req.params.idUsuario)
+        }, {
+            nombres: req.body.nombres,
+            apellido: req.body.apellido,
+            usuario: req.body.usuario,
+            direccion: req.body.direccion,
+            correo: req.body.correo,
+            identidad: req.body.identidad,
+            telefono: req.body.telefono
+        })
+        .then(response => {
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se modifico la informacion del usuario con exito'
+                res.send(result)
+            } else if (response.nModified === 0 && response.n === 1) {
+                result.Error = false
+                result.Response = 'No se realizo ningun cambio'
+                res.send(result)
+            } else {
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
+})
 
 module.exports = router
