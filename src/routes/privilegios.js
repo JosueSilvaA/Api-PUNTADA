@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const privilegio = require('../models/privilegio');
 const Result = require('../helpers/result');
+const { model } = require('../models/privilegio');
 
 
 
@@ -31,6 +32,7 @@ router.post('/registroPrivilegio',function(req,res){
 // Obtener los privilegios
 
 router.get('/obtenerPrivilegios',function(req,res){
+    let result = Result.createResult();
     privilegio.find({},{nombre:true,descripcion:true}).then(response=>{
         result.Error = false
         result.Response = 'Todos los privilegios'
@@ -46,3 +48,4 @@ router.get('/obtenerPrivilegios',function(req,res){
 
 //////////////////////////////////////////////////////////////////////
 
+module.exports = router;

@@ -7,7 +7,7 @@ database();
 /* Import Rutas */
 const usuariosRouter = require('./routes/usuarios');
 const rolesRouter = require('./routes/roles');
-
+const privilegiosRouter = require('./routes/privilegios');
 //express
 const app = express()
 
@@ -34,7 +34,7 @@ app.get('/', (req, res) =>{
 
 app.use('/api/usuario',usuariosRouter);
 app.use('/api/rol',rolesRouter);
-
+app.use('/api/privilegio',privilegiosRouter);
 
 //Cacth error on routes
 app.use((req, res, next) => {

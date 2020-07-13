@@ -54,7 +54,7 @@ router.get('/obtenerRoles', function(req, res) {
 
 // Registrar Privilegio
 
-router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio/', function(req, res) {
+router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio', function(req, res) {
     let result = Result.createResult()
     rol
         .update({
@@ -88,9 +88,42 @@ router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio/', function(req
             result.Response = 'Ocurrio un error'
             result.Success = false
             res.send(result)
-        })
-})
+        });
+});
 
+// Eliminar privilegio de un rol
+
+router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio', function(req, res) {
+    let result = Result.createResult();
+    rol.update({
+            _id: mongoose.Types.ObjectId(req.params.idRol)
+        }, {
+            $pull: {
+                privilegios: {
+                    _id: mongoose.Types.ObjectId(req.params.idPrivilegio)
+                }
+            }
+        })
+        .then(response => {
+            if(response.nModified === 1 && response.n === 1){
+                result.Error = false
+                result.Response = 'Privilegio eliminado con exito'
+                result.Items = response[0]
+                res.send(result)
+            }else{
+                result.Error = 'Id Invalido'
+                result.Success = false
+                result.Items = [];
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            result.Success = false
+            res.send(result)
+        });
+});
 
 
 module.exports = router
