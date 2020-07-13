@@ -3,7 +3,7 @@ const router = express.Router()
 const rol = require('../models/rol')
 const Result = require('../helpers/result')
 const mongoose = require('mongoose')
-const { response } = require('express')
+
 
 // Registrar un rol
 
