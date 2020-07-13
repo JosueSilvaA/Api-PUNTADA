@@ -3,7 +3,13 @@ const mongoose = require('mongoose');
 const rol = new mongoose.Schema({
     nombre:{
         type:String,
-        trim:true
+        trim:true,
+        unique:true
+    },
+    descripcion:{
+        type:String,
+        required:true,
+        unique:true
     },
     privilegios:{
         type:Array,
