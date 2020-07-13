@@ -17,15 +17,13 @@ router.post('/prueba', AutenticationToken, (req, res) => {
 router.post('/registroUsuario', async function(req, res) {
     let u = new Usuario({
         nombres: req.body.nombres,
-        apellido: req.body.apellido,
+        apellidos: req.body.apellido,
         usuario: req.body.usuario,
         direccion: req.body.direccion,
         correo: req.body.correo,
         contrasena: req.body.contrasena,
         identidad: req.body.identidad,
-        telefono: req.body.telefono,
-        estado: req.body.estado,
-        conexiones: []
+        telefono: req.body.telefono
     })
 
     //encrypt password
