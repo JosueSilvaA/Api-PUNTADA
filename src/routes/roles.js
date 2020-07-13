@@ -10,7 +10,8 @@ const mongoose = require('mongoose')
 router.post('/registroRol', function(req, res) {
     console.log(req.body)
     let newRol = new rol({
-        nombre: req.body.nombre
+        nombre: req.body.nombre,
+        descripcion:req.body.descripcion
     })
 
     let result = Result.createResult()
@@ -35,7 +36,7 @@ router.post('/registroRol', function(req, res) {
 router.get('/obtenerRoles', function(req, res) {
         let result = Result.createResult()
         rol
-            .find({}, { nombre: true })
+            .find({}, { nombre: true,descripcion:true})
             .then(response => {
                 result.Error = false
                 result.Response = 'Todos los roles'
