@@ -64,10 +64,6 @@ const usuario = new mongoose.Schema({
     creada: { 
         type: Date,
         default: Date.now
-    },
-    conexiones:{
-        type:mongoose.SchemaTypes.Array,
-        default:[]
     }
 });
 
