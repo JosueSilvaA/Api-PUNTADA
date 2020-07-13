@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const privilegio = require('../models/privilegio');
 const Result = require('../helpers/result');
-const { response } = require('express');
 
 
-// registrar un privilegio
+
+// Registrar un privilegio
 
 router.post('/registroPrivilegio',function(req,res){
     let nuevoPrivilegio = new privilegio({
@@ -27,3 +27,22 @@ router.post('/registroPrivilegio',function(req,res){
         res.send(result)
     });
 });
+
+// Obtener los privilegios
+
+router.get('/obtenerPrivilegios',function(req,res){
+    privilegio.find({},{nombre:true,descripcion:true}).then(response=>{
+        result.Error = false
+        result.Response = 'Todos los privilegios'
+        result.Items = response
+        res.send(result)
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    });
+});
+
+//////////////////////////////////////////////////////////////////////
+
