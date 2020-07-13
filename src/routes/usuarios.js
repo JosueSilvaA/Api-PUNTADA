@@ -176,7 +176,7 @@ router.put('/:idUsuario/editarUsuario', function(req, res) {
             _id: mongoose.Types.ObjectId(req.params.idUsuario)
         }, {
             nombres: req.body.nombres,
-            apellido: req.body.apellido,
+            apellidos: req.body.apellidos,
             usuario: req.body.usuario,
             direccion: req.body.direccion,
             correo: req.body.correo,
