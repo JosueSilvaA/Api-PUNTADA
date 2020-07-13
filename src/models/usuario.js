@@ -7,7 +7,7 @@ const usuario = new mongoose.Schema({
         required:true,
         trim:true
     },
-    apellido:{
+    apellidos:{
         type:String,
         required:true,
         trim:true
