@@ -53,7 +53,7 @@ router.get('/obtenerRoles', function(req, res) {
 
 // Registrar Privilegio
 
-router.post('/:idRol/registroPrivilegio', function(req, res) {
+router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio/', function(req, res) {
     let result = Result.createResult()
     rol
         .update({
@@ -61,10 +61,7 @@ router.post('/:idRol/registroPrivilegio', function(req, res) {
         }, {
             $push: {
                 privilegios: {
-                    _id: mongoose.Types.ObjectId(),
-                    nombre: req.body.nombre,
-                    descripcion: req.body.descripcion,
-                    creada: new Date()
+                    _id: mongoose.Types.ObjectId(req.params.idPrivilegio)
                 }
             }
         })
@@ -74,6 +71,10 @@ router.post('/:idRol/registroPrivilegio', function(req, res) {
                 result.Error = false;
                 result.Response = 'Privilegio registrado con exito';
                 res.send(result);
+            }else if(response.nModified === 0 && response.n === 1){
+                result.Error = false
+                result.Response = 'No se realizo ningun cambio'
+                res.send(result)
             }else{
                 result.Error = 'Id Invalido'
                 result.Success = false
@@ -100,7 +101,6 @@ router.get('/:idRol/obtenerPrivilegios', function(req, res) {
             privilegios: true
         })
         .then(response => {
-            console.log(response)
             if(response.length == 0){
                 result.Error = 'Id Invalido'
                 result.Success = false
@@ -142,6 +142,10 @@ router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio', function(r
                 result.Response = 'Privilegio eliminado con exito'
                 result.Items = response[0]
                 res.send(result)
+            }else if(response.nModified === 0 && response.n === 1){
+                result.Error = false
+                result.Response = 'No se realizo ningun cambio'
+                res.send(result)
             }else{
                 result.Error = 'Id Invalido'
                 result.Success = false
@@ -178,6 +182,10 @@ router.put('/:idRol/privilegios/:idPrivilegio/editarPrivilegio',function(req,res
         if(response.nModified === 1 && response.n === 1){
             result.Error = false
             result.Response = 'Privilegio editado con exito'
+            res.send(result)
+        }else if(response.nModified === 0 && response.n === 1){
+            result.Error = false
+            result.Response = 'No se realizo ningun cambio'
             res.send(result)
         }else{
             result.Error = 'Id Invalido'
