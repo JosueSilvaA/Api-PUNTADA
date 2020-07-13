@@ -17,7 +17,7 @@ router.post('/prueba', AutenticationToken, (req, res) => {
 router.post('/registroUsuario', async function(req, res) {
     let u = new Usuario({
         nombres: req.body.nombres,
-        apellidos: req.body.apellido,
+        apellidos: req.body.apellidos,
         usuario: req.body.usuario,
         direccion: req.body.direccion,
         correo: req.body.correo,
