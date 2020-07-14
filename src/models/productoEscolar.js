@@ -40,4 +40,4 @@ const productoEscolar = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('productoEscolar',productoEscolar);
+module.exports = mongoose.model('productosEscolares',productoEscolar);

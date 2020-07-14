@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const privilegio = require('../models/privilegio');
 const Result = require('../helpers/result');
-const { model } = require('../models/privilegio');
+
 
 
 

@@ -27,7 +27,8 @@ const proveedor = new mongoose.Schema({
     tipoProducto:{
         type:mongoose.SchemaTypes.Array,
         trim:true,
-        required:true
+        required:true,
+        default:[]
     },
     estado:{
         type:mongoose.SchemaTypes.Boolean,
@@ -40,4 +41,4 @@ const proveedor = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('proveedor',proveedor);
+module.exports = mongoose.model('proveedores',proveedor);

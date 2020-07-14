@@ -8,6 +8,7 @@ database();
 const usuariosRouter = require('./routes/usuarios');
 const rolesRouter = require('./routes/roles');
 const privilegiosRouter = require('./routes/privilegios');
+const proveedorRouter = require('./routes/proveedores');
 //express
 const app = express()
 
@@ -35,7 +36,7 @@ app.get('/', (req, res) =>{
 app.use('/api/usuario',usuariosRouter);
 app.use('/api/rol',rolesRouter);
 app.use('/api/privilegio',privilegiosRouter);
-
+app.use('/api/proveedor',proveedorRouter);
 //Cacth error on routes
 app.use((req, res, next) => {
     console.log('Ruta desconocida')
