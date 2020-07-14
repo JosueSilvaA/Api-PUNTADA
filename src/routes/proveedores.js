@@ -26,5 +26,54 @@ router.post('/registroProveedor',function(req,res){
     });
 });
 
+// Obtener Proveedores
+
+router.get('/obtenerProveedores',function(req,res){
+    let result = Result.createResult();
+    proveedor.find({}).then(response =>{
+        result.Error = false
+        result.Response = 'Todos los privilegios'
+        result.Items = response
+        res.send(result)
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    });
+});
+
+// Editar Proveedor
+
+router.put('/:idProveedor/editarProveedor',function(req,res){
+    proveedor.updateOne(
+        {_id:req.params.idProveedor},
+        {
+            nombre:req.body.nombre,
+            rtn:req.body.rtn,
+            telefono:req.body.telefono,
+            direccion:req.body.direccion
+        }
+    ).then(response =>{
+        if (response.nModified === 1 && response.n === 1) {
+            result.Error = false
+            result.Response = 'Se edito el proveedor con exito'
+            res.send(result)
+        } else if (response.nModified === 0 && response.n === 1) {
+            result.Error = false
+            result.Response = 'No se realizo ningun cambio'
+            res.send(result)
+        } else {
+            result.Error = 'Id Invalido'
+            result.Success = false
+            res.send(result)
+        }
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    })
+});
 
 module.exports = router;
