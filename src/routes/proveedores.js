@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const proveedor = require('../models/proveedor');
 const Result = require('../helpers/result');
 
@@ -75,5 +76,6 @@ router.put('/:idProveedor/editarProveedor',function(req,res){
         res.send(result)
     })
 });
+
 
 module.exports = router;

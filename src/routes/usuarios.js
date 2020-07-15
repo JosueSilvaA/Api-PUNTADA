@@ -86,7 +86,7 @@ router.get('/infoUsuarios', function(req, res) {
     let result = Result.createResult()
     Usuario.find({}, {
             nombres: true,
-            apellido: true,
+            apellidos: true,
             usuario: true,
             rol: true,
             imgUsuario: true,
