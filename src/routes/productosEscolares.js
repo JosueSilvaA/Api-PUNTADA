@@ -32,6 +32,19 @@ router.post('/registroProducto',function(req,res){
 
 // Obtener Producto Escolar
 
-
+router.get('/obtenerProductosEscolares',function(req,res){
+    let result = Result.createResult();
+    productoEscolar.find({}).then(response=>{
+        result.Error = false
+        result.Response = 'Todos los productos escolares'
+        result.Items = response
+        res.send(result)
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    });
+});
 
 module.exports = router;
