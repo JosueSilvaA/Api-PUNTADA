@@ -6,11 +6,12 @@ const mongoose = require('mongoose');
 
 // registrar un producto escolares
 
-router.post('/registroProductoEscolar',function(req,res){
+router.post('/registroProducto',function(req,res){
     let result = Result.createResult();
     let nuevoProducto = new productoEscolar({
         nombre:req.body.nombre,
         marca:req.body.marca,
+        color:req.body.color,
         proveedor:mongoose.Types.ObjectId(req.body.proveedor),
         precio:req.body.precio,
         tipoUtil:req.body.tipoUtil,
@@ -28,3 +29,9 @@ router.post('/registroProductoEscolar',function(req,res){
         res.send(result)
     })
 });
+
+// Obtener Producto Escolar
+
+
+
+module.exports = router;

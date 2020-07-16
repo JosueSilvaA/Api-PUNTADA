@@ -15,6 +15,16 @@ const productoEscolar = new mongoose.Schema({
         type:mongoose.SchemaTypes.ObjectId,
         required:true
     },
+    color:{
+        type:String,
+        trim:true,
+        default:''
+    },
+    imgProducto:{
+        type:String,
+        trim:true,
+        default:'https://images.app.goo.gl/4shxxDMF9i681oZc7'
+    },
     precio:{
         type:mongoose.SchemaTypes.Decimal128,
         required:true,

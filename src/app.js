@@ -9,7 +9,7 @@ const usuariosRouter = require('./routes/usuarios');
 const rolesRouter = require('./routes/roles');
 const privilegiosRouter = require('./routes/privilegios');
 const proveedorRouter = require('./routes/proveedores');
-
+const productoEscolarRouter = require('./routes/productosEscolares');
 //express
 const app = express()
 
@@ -38,7 +38,7 @@ app.use('/api/usuario',usuariosRouter);
 app.use('/api/rol',rolesRouter);
 app.use('/api/privilegio',privilegiosRouter);
 app.use('/api/proveedor',proveedorRouter);
-
+app.use('/api/productoEscolar',productoEscolarRouter);
 //Cacth error on routes
 app.use((req, res, next) => {
     console.log('Ruta desconocida')
