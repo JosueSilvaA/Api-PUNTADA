@@ -47,4 +47,64 @@ router.get('/obtenerProductosEscolares',function(req,res){
     });
 });
 
+// Editar producto escolar
+
+router.put('/:idProducto/editarProductoEscolar',function(req,res){
+    let result = Result.createResult();
+    productoEscolar.updateOne(
+        {_id:req.params.idProducto},
+        {
+            nombre:req.body.nombre,
+            marca:req.body.marca,
+            color:req.body.color,
+            precio:req.body.precio,
+            tipoUtil:req.body.tipoUtil,
+            descripcion:req.body.descripcion
+        }
+        ).then(response => {
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se modifico la informacion del producto'
+                res.send(result)
+            } else if (response.nModified === 0 && response.n === 1) {
+                result.Error = false
+                result.Response = 'No se realizo ningun cambio'
+                res.send(result)
+            } else {
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
+});
+
+// Eliminar producto escolar
+
+router.delete('/:idProducto/eliminarProductoEscolar',function(req,res){
+    let result = Result.createResult();
+    productoEscolar.deleteOne(
+        {_id:req.params.idProducto}
+        ).then(response => {
+            if (response.deletedCount === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se elimino el producto con exito'
+                res.send(result)
+            }else{
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
+});
+
 module.exports = router;
