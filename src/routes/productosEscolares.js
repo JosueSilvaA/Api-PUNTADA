@@ -85,12 +85,15 @@ router.put('/:idProducto/editarProductoEscolar',function(req,res){
 
 // Eliminar producto escolar
 
-router.delete('/:idProducto/eliminarProductoEscolar',function(req,res){
+router.put('/:idProducto/eliminarProductoEscolar',function(req,res){
     let result = Result.createResult();
-    productoEscolar.deleteOne(
-        {_id:req.params.idProducto}
+    productoEscolar.updateOne(
+        {_id:req.params.idProducto},
+        {
+            estado:false
+        }
         ).then(response => {
-            if (response.deletedCount === 1 && response.n === 1) {
+            if (response.nModified === 1 && response.n === 1) {
                 result.Error = false
                 result.Response = 'Se elimino el producto con exito'
                 res.send(result)
