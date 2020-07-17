@@ -116,9 +116,16 @@ router.get('/infoUsuarios', function(req, res) {
             conexiones: true
         })
         .then(response => {
+            let usuarios = response;
+            let usuariosActivos = [];
+            for(let i = 0; i<usuarios.length;i++){
+                if(usuarios[i].estado == true){
+                    usuariosActivos.push(usuarios[i]);
+                }
+            }
             result.Error = false
             result.Response = 'Usuarios con informacion mas importante'
-            result.Items = response
+            result.Items = usuariosActivos;
             res.send(result)
         })
         .catch(err => {
