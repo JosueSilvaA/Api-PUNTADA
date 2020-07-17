@@ -8,7 +8,8 @@ const productoTextil = new mongoose.Schema({
     },
     tipoTextil:{
         type:mongoose.SchemaTypes.Array,
-        required:true
+        required:true,
+        default:[]
     },
     color:{
         type:String,
