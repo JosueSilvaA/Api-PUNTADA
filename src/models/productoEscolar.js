@@ -25,7 +25,7 @@ const productoEscolar = new mongoose.Schema({
         default:'https://rockcontent.com/es/wp-content/uploads/2019/02/ejemplos-de-merchandising-1280x720.png'
     },
     precio:{
-        type:mongoose.SchemaTypes.Decimal128,
+        type:Number,
         required:true,
         trim:true
     },
