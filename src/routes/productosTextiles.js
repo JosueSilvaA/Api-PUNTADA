@@ -15,7 +15,8 @@ router.post('/registroProducto',function(req,res){
         rbaColor:req.body.rbaColor,
         proveedor:mongoose.Types.ObjectId(req.body.proveedor),
         precio:req.body.precio,
-        descripcion:req.body.descripcion
+        descripcion:req.body.descripcion,
+        tipoTextil:req.body.tipoTextil
     });
     nuevoProducto.save().then(response=>{
         result.Error = false
