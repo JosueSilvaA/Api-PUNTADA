@@ -18,7 +18,7 @@ const productoTextil = new mongoose.Schema({
     imgProducto:{
         type:String,
         trim:true,
-        default:'https://rockcontent.com/es/wp-content/uploads/2019/02/ejemplos-de-merchandising-1280x720.png'
+        default:'https://datanetconsultores.es/wp-content/uploads/2017/09/Textil-SUBIR.jpg'
     },
     rbaColor:{
         type:String,
