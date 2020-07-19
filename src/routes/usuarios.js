@@ -5,7 +5,7 @@ const router = express.Router()
 const Result = require('../helpers/result')
 const Usuario = require('../models/usuario')
 const mongoose = require('mongoose')
-const { response } = require('express')
+
 
 //prueba para usar autenticación con jwt
 router.post('/prueba', AutenticationToken, (req, res) => {
