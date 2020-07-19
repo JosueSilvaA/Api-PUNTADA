@@ -15,6 +15,11 @@ const productoTextil = new mongoose.Schema({
         required:true,
         trim:true
     },
+    imgProducto:{
+        type:String,
+        trim:true,
+        default:'https://rockcontent.com/es/wp-content/uploads/2019/02/ejemplos-de-merchandising-1280x720.png'
+    },
     rbaColor:{
         type:String,
         required:true,
