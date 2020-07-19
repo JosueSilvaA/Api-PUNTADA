@@ -15,12 +15,13 @@ const productoVariado = new mongoose.Schema({
         trim:true
     },
     precio:{
-        type:mongoose.SchemaTypes.Decimal128,
+        type:Number,
         required:true
     },
     tipoVariado:{
-        type:mongoose.SchemaTypes.Array,
-        required:true
+        type:String,
+        required:true,
+        trim:true
     },
     descripcion:{
         type:String,
