@@ -48,4 +48,4 @@ const productoTextil = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('productoTextil',productoTextil);
+module.exports = mongoose.model('productosTextiles',productoTextil);
