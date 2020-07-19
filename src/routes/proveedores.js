@@ -32,6 +32,16 @@ router.post('/registroProveedor',function(req,res){
 router.get('/obtenerProveedores',function(req,res){
     let result = Result.createResult();
     proveedor.find({}).then(response =>{
+            let proveedoresActivos = [];
+            for(let i = 0; i<response.length;i++){
+                if(response[i].estado == true){
+                    proveedoresActivos.push(response[i]);
+                }
+            }
+            result.Error = false
+            result.Response = 'Usuarios con informacion mas importante'
+            result.Items = proveedoresActivos;
+            res.send(result)
         result.Error = false
         result.Response = 'Todos los privilegios'
         result.Items = response

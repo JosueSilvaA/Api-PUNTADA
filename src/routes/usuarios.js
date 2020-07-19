@@ -36,12 +36,34 @@ router.post('/registroUsuario', async function(req, res) {
             result.Items = response
             result.Response = 'Usuario registrado con exito'
             res.send(result)
+            console.log(response)
         })
-        .catch(error => {
-            result.Error = error
-            result.Success = false
-            result.Response = 'Ocurrio un error'
-            res.send(result)
+        .catch(err => {
+            if(err.keyValue.usuario){
+                result.Error = 'Este usuario ya esta registrado'
+                result.Success = false
+                result.Response = 'Ocurrio un error'
+                res.send(result)
+            }else if(err.keyValue.correo){
+                result.Error = 'Este correo ya esta registrado'
+                result.Success = false
+                result.Response = 'Ocurrio un error'
+                res.send(result)
+            }else if(err.keyValue.identidad){
+                result.Error = 'Este numero de identidad ya esta registrado'
+                result.Success = false
+                result.Response = 'Ocurrio un error'
+                res.send(result)
+            }else if(err.keyValue.telefono){
+                result.Error = 'Este numero de telefono ya esta registrado'
+                result.Success = false
+                result.Response = 'Ocurrio un error'
+                res.send(result)
+            }else{
+                result.Error = err
+                result.Response = 'Ocurrio un error'
+                res.send(result)
+            }
         })
 })
 
@@ -94,9 +116,16 @@ router.get('/infoUsuarios', function(req, res) {
             conexiones: true
         })
         .then(response => {
+            let usuarios = response;
+            let usuariosActivos = [];
+            for(let i = 0; i<usuarios.length;i++){
+                if(usuarios[i].estado == true){
+                    usuariosActivos.push(usuarios[i]);
+                }
+            }
             result.Error = false
             result.Response = 'Usuarios con informacion mas importante'
-            result.Items = response
+            result.Items = usuariosActivos;
             res.send(result)
         })
         .catch(err => {

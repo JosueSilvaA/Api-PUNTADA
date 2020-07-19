@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const productoEscolar = new mongoose.Schema({
     nombre:{
         type:String,
-        required:true,
-        trim:true
+        required:true
     },
     marca:{
         type:String,
@@ -32,8 +31,7 @@ const productoEscolar = new mongoose.Schema({
     },
     tipoUtil:{
         type:String,
-        required:true,
-        trim:true
+        required:true
     },
     descripcion:{
         type:String,

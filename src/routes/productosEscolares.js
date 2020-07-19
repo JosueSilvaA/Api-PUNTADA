@@ -35,9 +35,15 @@ router.post('/registroProducto',function(req,res){
 router.get('/obtenerProductosEscolares',function(req,res){
     let result = Result.createResult();
     productoEscolar.find({}).then(response=>{
+        let productosActivos = [];
+        for(let i = 0; i < response.length;i++){
+            if(response[i].estado == true){
+                 productosActivos.push(response[i]);
+            }
+        }
         result.Error = false
         result.Response = 'Todos los productos escolares'
-        result.Items = response
+        result.Items = productosActivos
         res.send(result)
     }).catch(err=>{
         result.Error = err
@@ -45,6 +51,69 @@ router.get('/obtenerProductosEscolares',function(req,res){
         result.Success = false
         res.send(result)
     });
+});
+
+// Editar producto escolar
+
+router.put('/:idProducto/editarProductoEscolar',function(req,res){
+    let result = Result.createResult();
+    productoEscolar.updateOne(
+        {_id:req.params.idProducto},
+        {
+            nombre:req.body.nombre,
+            marca:req.body.marca,
+            color:req.body.color,
+            precio:req.body.precio,
+            tipoUtil:req.body.tipoUtil,
+            descripcion:req.body.descripcion
+        }
+        ).then(response => {
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se modifico la informacion del producto'
+                res.send(result)
+            } else if (response.nModified === 0 && response.n === 1) {
+                result.Error = false
+                result.Response = 'No se realizo ningun cambio'
+                res.send(result)
+            } else {
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
+});
+
+// Eliminar producto escolar
+
+router.put('/:idProducto/eliminarProductoEscolar',function(req,res){
+    let result = Result.createResult();
+    productoEscolar.updateOne(
+        {_id:req.params.idProducto},
+        {
+            estado:false
+        }
+        ).then(response => {
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se elimino el producto con exito'
+                res.send(result)
+            }else{
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
 });
 
 module.exports = router;
