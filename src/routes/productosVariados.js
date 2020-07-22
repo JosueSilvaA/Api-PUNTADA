@@ -28,4 +28,28 @@ router.post('/registroProducto',function(req,res){
     })
 });
 
+// Obtener productos variados
+
+router.get('/obtenerProductosVariados',function(req,res){
+    let result = Result.createResult();
+    productoVariado.find({}).then(response=>{
+        let productosActivos = [];
+        for(let i = 0; i < response.length;i++){
+            if(response[i].estado == true){
+                 productosActivos.push(response[i]);
+            }
+        }
+        result.Error = false
+        result.Response = 'Todos los productos variados'
+        result.Items = productosActivos
+        res.send(result)
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    });
+});
+
+
 module.exports = router;
