@@ -85,5 +85,32 @@ router.put('/:idProducto/editarProductoVariado',function(req,res){
         });
 });
 
+// Eliminar producto variado
+
+router.put('/:idProducto/eliminarProductoVariado',function(req,res){
+    let result = Result.createResult();
+    productoVariado.updateOne(
+        {_id:req.params.idProducto},
+        {
+            estado:false
+        }
+        ).then(response => {
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se elimino el producto con exito'
+                res.send(result)
+            }else{
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
+});
+
 
 module.exports = router;
