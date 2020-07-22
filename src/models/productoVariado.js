@@ -9,10 +9,10 @@ const productoVariado = new mongoose.Schema({
     proveedor:{
         type:mongoose.SchemaTypes.ObjectId
     },
-    marca:{
+    imgProducto:{
         type:String,
-        required:true,
-        trim:true
+        trim:true,
+        default:'https://www.combinatoria.com.ar/wp-content/uploads/sites/7/2018/09/Indicadores-ecommerce-vender-online1170x550-900x.png'
     },
     precio:{
         type:Number,
@@ -42,4 +42,4 @@ const productoVariado = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('productoVariado',productoVariado);
+module.exports = mongoose.model('productosVariados',productoVariado);
