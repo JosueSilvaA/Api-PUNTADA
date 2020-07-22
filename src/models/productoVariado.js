@@ -18,6 +18,11 @@ const productoVariado = new mongoose.Schema({
         type:Number,
         required:true
     },
+    cantidad:{
+        type:Number,
+        trim:true,
+        default:1
+    },
     tipoVariado:{
         type:String,
         required:true,
