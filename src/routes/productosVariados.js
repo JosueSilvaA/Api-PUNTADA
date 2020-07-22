@@ -51,5 +51,39 @@ router.get('/obtenerProductosVariados',function(req,res){
     });
 });
 
+// Editar producto variados
+
+router.put('/:idProducto/editarProductoVariado',function(req,res){
+    let result = Result.createResult();
+    productoVariado.updateOne(
+        {_id:req.params.idProducto},
+        {
+            nombre:req.body.nombre,
+            precio:req.body.precio,
+            tipoVariado:req.body.tipoVariado,
+            descripcion:req.body.descripcion
+        }
+        ).then(response => {
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se modifico la informacion del producto'
+                res.send(result)
+            } else if (response.nModified === 0 && response.n === 1) {
+                result.Error = false
+                result.Response = 'No se realizo ningun cambio'
+                res.send(result)
+            } else {
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
+});
+
 
 module.exports = router;
