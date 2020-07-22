@@ -54,4 +54,67 @@ router.get('/obtenerProductosTextiles',function(req,res){
     });
 });
 
+// Editar producto textil
+
+router.put('/:idProducto/editarProductoTextil',function(req,res){
+    let result = Result.createResult();
+    productoTextil.updateOne(
+        {_id:req.params.idProducto},
+        {
+            nombre:req.body.nombre,
+            color:req.body.color,
+            precio:req.body.precio,
+            tipoTextil:req.body.tipoTextil,
+            descripcion:req.body.descripcion
+        }
+        ).then(response => {
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se modifico la informacion del producto'
+                res.send(result)
+            } else if (response.nModified === 0 && response.n === 1) {
+                result.Error = false
+                result.Response = 'No se realizo ningun cambio'
+                res.send(result)
+            } else {
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
+});
+
+// Eliminar producto textil
+
+router.put('/:idProducto/eliminarProductoTextil',function(req,res){
+    let result = Result.createResult();
+    productoTextil.updateOne(
+        {_id:req.params.idProducto},
+        {
+            estado:false
+        }
+        ).then(response => {
+            if (response.nModified === 1 && response.n === 1) {
+                result.Error = false
+                result.Response = 'Se elimino el producto con exito'
+                res.send(result)
+            }else{
+                result.Error = 'Id Invalido'
+                result.Success = false
+                res.send(result)
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            res.send(result)
+        });
+});
+
+
 module.exports = router;

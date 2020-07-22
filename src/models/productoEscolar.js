@@ -29,6 +29,11 @@ const productoEscolar = new mongoose.Schema({
         required:true,
         trim:true
     },
+    cantidad:{
+        type:Number,
+        trim:true,
+        default:1
+    },
     tipoUtil:{
         type:String,
         required:true
