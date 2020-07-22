@@ -34,6 +34,11 @@ const productoTextil = new mongoose.Schema({
         required:true,
         trim:true
     },
+    cantidad:{
+        type:Number,
+        trim:true,
+        default:1
+    },
     descripcion:{
         type:String,
         required:true
