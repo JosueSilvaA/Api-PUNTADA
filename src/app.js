@@ -12,6 +12,7 @@ const proveedorRouter = require('./routes/proveedores');
 const productoEscolarRouter = require('./routes/productosEscolares');
 const productoTextilRouter = require('./routes/productosTextiles');
 const productoVariadoRouter = require('./routes/productosVariados');
+const productoGeneral = require('./routes/productosGeneral')
 //express
 const app = express()
 
@@ -43,6 +44,7 @@ app.use('/api/proveedor',proveedorRouter);
 app.use('/api/productoEscolar',productoEscolarRouter);
 app.use('/api/productoTextil',productoTextilRouter);
 app.use('/api/productoVariado',productoVariadoRouter);
+app.use('/api/productoGeneral',productoGeneral)
 //Cacth error on routes
 app.use((req, res, next) => {
     console.log('Ruta desconocida')
