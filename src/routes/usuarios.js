@@ -5,6 +5,7 @@ const router = express.Router()
 const Result = require('../helpers/result')
 const Usuario = require('../models/usuario')
 const mongoose = require('mongoose')
+const { route } = require('../middlewares/autenticationJWT')
 
 
 //prueba para usar autenticación con jwt
@@ -232,6 +233,31 @@ router.put('/:idUsuario/editarUsuario', function(req, res) {
             result.Response = 'Ocurrio un error'
             res.send(result)
         });
+})
+
+router.get('/infoUsuario/:idUsuario', (req, res) => {
+    let result = Result.createResult();
+    Usuario.findById(req.params.idUsuario, {
+        nombres: true,
+        apellidos: true,
+        usuario: true,
+        rol: true,
+        imgUsuario: true,
+        estado: true,
+        conexiones: true
+        })
+        .then((response) => {
+            result.Error = false
+            result.Response = 'Información de usuario'
+            result.Items = response
+            res.send(result)
+        })
+        .catch((err) => {
+            result.Error = true
+            result.Response = 'Error al conectar a la base de datos'
+            result.Success = false
+            res.send(result)
+        })
 })
 
 module.exports = router
