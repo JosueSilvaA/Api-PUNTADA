@@ -27,6 +27,30 @@ router.get('/obtenerProductoPorId/:idProducto', async (req, res) => {
     res.send(result)
 });
 
+/* Servicio temporal, mejorar luego */
+router.get('/obtenerProductos', async (req, res) => {
+    let result = Result.createResult();
+
+    let productos = [];
+    const escolar = await productoEscolar.find({})
+    const textil = await productoTextil.find({})
+    const variado = await productoVariado.find({})
+    escolar.forEach((producto) =>{
+        productos.push(producto)
+    })
+    textil.forEach((producto) => {
+        productos.push(producto)
+    })
+    variado.forEach((producto) => {
+        productos.push(producto)
+    })
+    result.Error = false
+    result.Response = 'Productos generales'
+    result.Items = productos
+    res.send(result)
+
+})
+
 
 
 
