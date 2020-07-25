@@ -5,6 +5,8 @@ const router = express.Router()
 const Result = require('../helpers/result')
 const Usuario = require('../models/usuario')
 const mongoose = require('mongoose')
+const Rol = require('../models/rol')
+const Privilegio = require('../models/privilegio')
 const { route } = require('../middlewares/autenticationJWT')
 
 
@@ -258,6 +260,40 @@ router.get('/infoUsuario/:idUsuario', (req, res) => {
             result.Success = false
             res.send(result)
         })
+})
+
+/* Servicio: Obtener Rol y Privilegios de un usuario */
+router.get('/obtenerRolPrivilegios/:idRol', async (req, res) => {
+    let result = Result.createResult();
+    let rol;
+    let privilegioId = [];
+    Rol.findById({_id: req.params.idRol}, (err, response) => {
+        if (!err) {
+            rol = {nombre: response.nombre, descripcion: response.descripcion}
+            response.privilegios.forEach((elemento) => {
+                privilegioId.push(elemento._id)
+            })
+            Privilegio.find({_id: {$in: privilegioId}}, (err, response) => {
+                if (!err) {
+                    result.Error = false
+                    result.Response = 'Info y privilegios de un rol'
+                    result.Items = { rol: rol, privilegios: response }
+                    res.send(result)
+                } else {
+                    result.Error = true
+                    result.Response = 'Error: privilegios no encontrados'
+                    result.Success = false
+                    res.send(result)
+                }
+                
+            })
+        } else {
+            result.Error = true
+            result.Response = 'Error, rol no encontrado'
+            result.Success = false
+            res.send(result)
+        }
+    })
 })
 
 module.exports = router
