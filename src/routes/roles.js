@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const rol = require('../models/rol')
+const privilegio = require('../models/privilegio');
 const Result = require('../helpers/result')
 const mongoose = require('mongoose')
 
@@ -90,6 +91,42 @@ router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio', function(req,
             res.send(result)
         });
 });
+
+// Obtener privilegios de un rol
+
+router.post('/:idRol/obtenerPrivilegios', function(req, res) {
+    let result = Result.createResult()
+    rol
+        .find({
+            _id: mongoose.Types.ObjectId(req.params.idRol)
+        }, {
+            privilegios: true
+        })
+        .then(response => {
+            if(response.length == 0){
+                result.Error = 'Id Invalido'
+                result.Success = false
+                result.Items = [];
+                res.send(result)
+            }else{
+                privilegio.find({_id: {$in: response[0].privilegios}}, {nombre:true, descripcion: true}).then(response => {
+                    result.Success = true;
+                    result.Error = false
+                    result.Response = 'Todos los privilegios de este rol'
+                    result.Items = response
+                    res.send(result)
+                })
+                //console.log(response[0].privilegios)
+               
+            }
+        })
+        .catch(err => {
+            result.Error = err
+            result.Response = 'Ocurrio un error'
+            result.Success = false
+            res.send(result);
+        })
+})
 
 // Eliminar privilegio de un rol
 
