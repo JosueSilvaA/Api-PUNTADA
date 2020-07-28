@@ -51,7 +51,7 @@ router.get('/obtenerPrivilegios',function(req,res){
 
 // Privilegios que no están en un rol.
 
-router.get('/obtenerPrivilegiosNotInRol',function(req,res){
+router.post('/obtenerPrivilegiosNotInRol',function(req,res){
     let result = Result.createResult();
 
     rol.findOne({'nombre': req.body.rol}, {nombre:true, privilegios: true}).then(response => {
