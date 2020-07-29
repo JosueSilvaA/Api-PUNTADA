@@ -1,21 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const facturaCliente = require('../models/facturaCliente');
+const facturaProveedor = require('../models/facturaProveedor');
 const Result = require('../helpers/result');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-// registrar factura cliente
 
-router.post('/registroFacturaCliente',function(req,res){
+// registrar factura proveedor
+
+router.post('/registroFacturaProveedor',function(req,res){
     let result = Result.createResult();
-    let nuevaFactura = new facturaCliente({
-        nombreCliente:req.body.data.nombreCliente,
-        rtn:req.body.data.rtn,
-        telefono:req.body.data.telefono,
-        direccion:req.body.data.direccion,
+    let nuevaFactura = new facturaProveedor({
+        proveedor:mongoose.Types.ObjectId(req.body.data.idProveedor),
         fechaFactura:req.body.data.fechaFactura,
         productos:req.body.productos,
-        nombreEmpleado:mongoose.Types.ObjectId(req.body.idEmpleado),
         subTotal:req.body.data.subTotal,
         isv:req.body.data.isv,
         total:req.body.data.total,
@@ -23,7 +20,7 @@ router.post('/registroFacturaCliente',function(req,res){
     })
     nuevaFactura.save().then(response =>{
         result.Error = false
-        result.Response = 'Factura de Cliente registrada con exito'
+        result.Response = 'Factura de Proveedor registrada con exito'
         result.Items = response
         res.send(result)
     }).catch(err =>{
@@ -35,13 +32,13 @@ router.post('/registroFacturaCliente',function(req,res){
 });
 
 
-// Obtener Facturas Clientes
+// Obtener Facturas Proveedor
 
-router.get('/obtenerFacturasClientes',function(req,res){
+router.get('/obtenerFacturasProveedores',function(req,res){
     let result = Result.createResult();
-    facturaCliente.find({}).then(response=>{
+    facturaProveedor.find({}).then(response=>{
         result.Error = false
-        result.Response = 'Todas las facturas de clientes'
+        result.Response = 'Todas las facturas de proveedores'
         result.Items = response
         res.send(result)
     }).catch(err=>{
@@ -52,17 +49,14 @@ router.get('/obtenerFacturasClientes',function(req,res){
     });
 })
 
-// Editar Factura Clientes
+// Editar Factura Proveedor
 
-router.put('/:idFactura/editarFacturaCliente',function(req,res){
+router.put('/:idFactura/editarFacturaProveedor',function(req,res){
     let result = Result.createResult();
-    facturaCliente.updateOne(
+    facturaProveedor.updateOne(
         {_id:req.params.idFactura},
         {
-            nombreCliente:req.body.data.nombreCliente,
-            rtn:req.body.data.rtn,
-            telefono:req.body.data.telefono,
-            direccion:req.body.data.direccion,
+            proveedor:mongoose.Types.ObjectId(req.body.data.idProveedor),
             fechaFactura:req.body.data.fechaFactura
         }
         ).then(response => {

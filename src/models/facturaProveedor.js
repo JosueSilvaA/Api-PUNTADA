@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const facturaProveedor = new mongoose.Schema({
-    nombreProveedor:{
+    proveedor:{
         type:mongoose.SchemaTypes.ObjectId,
         required:true
     },
