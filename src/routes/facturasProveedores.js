@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 router.post('/registroFacturaProveedor',function(req,res){
     let result = Result.createResult();
     let nuevaFactura = new facturaProveedor({
-        proveedor:mongoose.Types.ObjectId(req.body.data.idProveedor),
+        proveedor:mongoose.Types.ObjectId(req.body.idProveedor),
         fechaFactura:req.body.data.fechaFactura,
         productos:req.body.productos,
         subTotal:req.body.data.subTotal,
