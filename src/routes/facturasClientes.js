@@ -18,8 +18,7 @@ router.post('/registroFacturaCliente',function(req,res){
         nombreEmpleado:mongoose.Types.ObjectId(req.body.idEmpleado),
         subTotal:req.body.data.subTotal,
         isv:req.body.data.isv,
-        total:req.body.data.total,
-        estado:req.body.data.estado
+        total:req.body.data.total
     })
     nuevaFactura.save().then(response =>{
         result.Error = false

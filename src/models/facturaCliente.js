@@ -47,11 +47,6 @@ const facturaCliente = new mongoose.Schema({
     creada:{ 
         type: Date,
         default: Date.now
-    },
-    estado:{
-        type:String,
-        trim:true,
-        required:true
     }
 });
 
