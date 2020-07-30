@@ -96,9 +96,10 @@ router.post('/login', function(req, res) {
         const token = await CreateJWT({
             usuario: usuario.usuario,
             id: usuario._id,
-            rol: usuario.rol
+            rol: usuario.rol,
+            imgUser: usuario.imgUsuario
         })
-
+        
         result.Items = { token: token }
         result.Response = 'Inicio de sesión exitoso'
         return res.json(result)
