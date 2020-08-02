@@ -18,17 +18,17 @@ const facturaProveedor = new mongoose.Schema({
         required:true
     },
     subTotal:{
-        type:mongoose.SchemaTypes.Decimal128,
+        type:Number,
         required:true,
         trim:true
     },
     isv:{
-        type:mongoose.SchemaTypes.Decimal128,
+        type:Number,
         required:true,
         trim:true
     },
     total:{
-        type:mongoose.SchemaTypes.Decimal128,
+        type:Number,
         required:true,
         trim:true
     },
@@ -40,4 +40,4 @@ const facturaProveedor = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('facturaProveedor',facturaProveedor);
+module.exports = mongoose.model('facturasProveedores',facturaProveedor);
