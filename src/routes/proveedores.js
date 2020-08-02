@@ -39,11 +39,27 @@ router.get('/obtenerProveedores',function(req,res){
                 }
             }
             result.Error = false
-            result.Response = 'Usuarios con informacion mas importante'
+            result.Response = 'Todos los preveedores'
             result.Items = proveedoresActivos;
             res.send(result)
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    });
+});
+
+// Obtener Proveedor 
+
+router.get('/:idProveedor/obtenerProveedor',function(req,res){
+    let result = Result.createResult();
+    proveedor.findById(
+        {_id: req.params.idProveedor},
+        {nombre:true}
+    ).then(response =>{
         result.Error = false
-        result.Response = 'Todos los privilegios'
+        result.Response = 'Proveedor Obtenido'
         result.Items = response
         res.send(result)
     }).catch(err=>{
@@ -54,9 +70,11 @@ router.get('/obtenerProveedores',function(req,res){
     });
 });
 
+
 // Editar Proveedor
 
 router.put('/:idProveedor/editarProveedor',function(req,res){
+    let result = Result.createResult();
     proveedor.updateOne(
         {_id:req.params.idProveedor},
         {
