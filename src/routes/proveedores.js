@@ -58,10 +58,16 @@ router.get('/:idProveedor/obtenerProveedor',function(req,res){
         {_id: req.params.idProveedor},
         {nombre:true}
     ).then(response =>{
-        result.Error = false
-        result.Response = 'Proveedor Obtenido'
-        result.Items = response
-        res.send(result)
+        if(response === null){
+            result.Error = true
+            result.Response = 'Id invalido'
+            res.send(result)
+        }else{
+            result.Error = false
+            result.Response = 'Proveedor Obtenido'
+            result.Items = response
+            res.send(result)
+        }
     }).catch(err=>{
         result.Error = err
         result.Response = 'Ocurrio un error'

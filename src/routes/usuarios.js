@@ -117,7 +117,6 @@ router.get('/infoUsuarios', function(req, res) {
             rol: true,
             imgUsuario: true,
             estado: true,
-            conexiones: true
         })
         .then(response => {
             let usuarios = response;
@@ -137,6 +136,39 @@ router.get('/infoUsuarios', function(req, res) {
             result.Response = 'Ocurrio un error'
             res.send(result)
         })
+})
+
+// Obtener informacion de un empleado
+
+router.get('/:idUsuario/obtenerUsuario',function(req,res){
+    let result = Result.createResult()
+    Usuario.findById(
+        {_id:req.params.idUsuario},
+        {
+            nombres: true,
+            apellidos: true,
+            usuario: true,
+            rol: true,
+            imgUsuario: true,
+            estado: true
+        }
+    ).then(response =>{
+        if(response === null){
+            result.Error = true
+            result.Response = 'Id invalido'
+            res.send(result)
+        }else{
+            result.Error = false
+            result.Response = 'Empleado Obtenido'
+            result.Items = response
+            res.send(result)
+        }
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    });
 })
 
 // Cambiar estado del Usuario
