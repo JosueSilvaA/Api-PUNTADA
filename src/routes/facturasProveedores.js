@@ -12,7 +12,7 @@ router.post('/registroFacturaProveedor',function(req,res){
     let nuevaFactura = new facturaProveedor({
         proveedor:mongoose.Types.ObjectId(req.body.idProveedor),
         fechaFactura:req.body.data.fechaFactura,
-        productos:req.body.productos,
+        productos:req.body.productos[0],
         subTotal:req.body.data.subTotal,
         isv:req.body.data.isv,
         total:req.body.data.total,
