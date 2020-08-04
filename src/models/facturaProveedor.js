@@ -14,7 +14,7 @@ const facturaProveedor = new mongoose.Schema({
         default: Date.now
     },
     productos:{
-        type:mongoose.SchemaTypes.Array,
+        type:Array,
         required:true
     },
     subTotal:{
