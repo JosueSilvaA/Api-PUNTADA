@@ -22,7 +22,7 @@ const facturaCliente = new mongoose.Schema({
         type:Date
     },
     productos:{
-        type:mongoose.SchemaTypes.Array,
+        type:Array,
         required:true
     },
     nombreEmpleado:{
