@@ -12,7 +12,8 @@ router.post('/registroProveedor',function(req,res){
         nombre:req.body.nombre,
         rtn:req.body.rtn,
         telefono:req.body.telefono,
-        direccion:req.body.direccion
+        direccion:req.body.direccion,
+        tipoProducto:req.body.tipoProducto
     });
     nuevoProveedor.save().then(response =>{
         result.Error = false
@@ -87,7 +88,8 @@ router.put('/:idProveedor/editarProveedor',function(req,res){
             nombre:req.body.nombre,
             rtn:req.body.rtn,
             telefono:req.body.telefono,
-            direccion:req.body.direccion
+            direccion:req.body.direccion,
+            tipoProducto:req.body.tipoProducto
         }
     ).then(response =>{
         if (response.nModified === 1 && response.n === 1) {
