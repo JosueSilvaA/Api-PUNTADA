@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const facturaProveedor = require('../models/facturaProveedor');
 const ProductoEscolar = require('../models/productoEscolar');
+const ProductoTextil = require('../models/productoTextil');
+const ProductoVariado = require('../models/productoVariado');
 const Result = require('../helpers/result');
 const mongoose = require('mongoose');
 
@@ -27,6 +29,62 @@ router.post('/registroFacturaProveedor',function(req,res){
                 let cantidadActual = productoEs.cantidad
                 let cantidadNueva = cantidadActual + productos[i].cantidad
                 ProductoEscolar.updateOne({_id:productos[i].producto},{cantidad : cantidadNueva})
+                .then(productoActualizado=>{
+                    if (productoActualizado.nModified === 1 && productoActualizado.n === 1) {
+                        result.Error = false
+                        result.Response = 'Se cambio la cantidad del producto'
+                        res.send(result)
+                    } else if (productoActualizado.nModified === 0 && productoActualizado.n === 1) {
+                        result.Error = false
+                        result.Response = 'No se realizo ningun cambio'
+                        res.send(result)
+                    } else {
+                        result.Error = 'Id Invalido'
+                        result.Success = false
+                        res.send(result)
+                    }
+                })
+            })
+            .catch(err=>{
+                result.Error = err
+                result.Response = 'Ocurrio un error'
+                result.Success = false
+                res.send(result)
+            })
+            /////////////////////////////////////////////////////
+            ProductoTextil.findById({_id:productos[i].producto})
+            .then(productoTe=>{
+                let cantidadActual = productoTe.cantidad
+                let cantidadNueva = cantidadActual + productos[i].cantidad
+                ProductoTextil.updateOne({_id:productos[i].producto},{cantidad : cantidadNueva})
+                .then(productoActualizado=>{
+                    if (productoActualizado.nModified === 1 && productoActualizado.n === 1) {
+                        result.Error = false
+                        result.Response = 'Se cambio la cantidad del producto'
+                        res.send(result)
+                    } else if (productoActualizado.nModified === 0 && productoActualizado.n === 1) {
+                        result.Error = false
+                        result.Response = 'No se realizo ningun cambio'
+                        res.send(result)
+                    } else {
+                        result.Error = 'Id Invalido'
+                        result.Success = false
+                        res.send(result)
+                    }
+                })
+            })
+            .catch(err=>{
+                result.Error = err
+                result.Response = 'Ocurrio un error'
+                result.Success = false
+                res.send(result)
+            })
+            ////////////////////////////////////////////////////
+            ProductoVariado.findById({_id:productos[i].producto})
+            .then(productoVa=>{
+                let cantidadActual = productoVa.cantidad
+                let cantidadNueva = cantidadActual + productos[i].cantidad
+                ProductoVariado.updateOne({_id:productos[i].producto},{cantidad : cantidadNueva})
                 .then(productoActualizado=>{
                     if (productoActualizado.nModified === 1 && productoActualizado.n === 1) {
                         result.Error = false
