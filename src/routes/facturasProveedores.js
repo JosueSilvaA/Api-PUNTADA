@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const facturaProveedor = require('../models/facturaProveedor');
+const ProductoEscolar = require('../models/productoEscolar');
 const Result = require('../helpers/result');
 const mongoose = require('mongoose');
 
@@ -19,6 +20,36 @@ router.post('/registroFacturaProveedor',function(req,res){
         estado:req.body.data.estado
     })
     nuevaFactura.save().then(response =>{
+        let productos = req.body.productos
+        for (let i = 0; i < productos.length; i++) {
+            ProductoEscolar.findById({_id:productos[i].producto})
+            .then(productoEs=>{
+                let cantidadActual = productoEs.cantidad
+                let cantidadNueva = cantidadActual + productos[i].cantidad
+                ProductoEscolar.updateOne({_id:productos[i].producto},{cantidad : cantidadNueva})
+                .then(productoActualizado=>{
+                    if (productoActualizado.nModified === 1 && productoActualizado.n === 1) {
+                        result.Error = false
+                        result.Response = 'Se cambio la cantidad del producto'
+                        res.send(result)
+                    } else if (productoActualizado.nModified === 0 && productoActualizado.n === 1) {
+                        result.Error = false
+                        result.Response = 'No se realizo ningun cambio'
+                        res.send(result)
+                    } else {
+                        result.Error = 'Id Invalido'
+                        result.Success = false
+                        res.send(result)
+                    }
+                })
+            })
+            .catch(err=>{
+                result.Error = err
+                result.Response = 'Ocurrio un error'
+                result.Success = false
+                res.send(result)
+            })
+        }
         result.Error = false
         result.Response = 'Factura de Proveedor registrada con exito'
         result.Items = response
