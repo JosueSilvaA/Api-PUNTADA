@@ -3,6 +3,9 @@ const router = express.Router();
 const facturaCliente = require('../models/facturaCliente');
 const Result = require('../helpers/result');
 const mongoose = require('mongoose')
+const ProductoEscolar = require('../models/productoEscolar');
+const ProductoTextil = require('../models/productoTextil');
+const ProductoVariado = require('../models/productoVariado');
 
 // registrar factura cliente
 
