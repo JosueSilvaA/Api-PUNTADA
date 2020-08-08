@@ -332,6 +332,7 @@ router.get('/obtenerRolPrivilegios/:idRol', async (req, res) => {
 // Obtener rol de un usuario
 
 router.post('/obtenerRol/:idRol',function(req,res){
+    let result = Result.createResult();
     Rol.findById({_id:req.params.idRol},{nombre:true})
     .then(response=>{
         result.Error = false
