@@ -15,6 +15,7 @@ const productoVariadoRouter = require('./routes/productosVariados');
 const productoGeneral = require('./routes/productosGeneral')
 const facturaClienteRouter = require('./routes/facturasClientes');
 const facturaProveedorRouter = require('./routes/facturasProveedores');
+const reporteVentas = require('./routes/reportesVentas');
 //express
 const app = express()
 
@@ -49,6 +50,7 @@ app.use('/api/productoVariado',productoVariadoRouter);
 app.use('/api/productoGeneral',productoGeneral);
 app.use('/api/facturaCliente',facturaClienteRouter);
 app.use('/api/facturaProveedor/',facturaProveedorRouter);
+app.use('/api/reporteVentas', reporteVentas);
 //Cacth error on routes
 app.use((req, res, next) => {
     console.log('Ruta desconocida')

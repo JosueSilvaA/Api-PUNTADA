@@ -175,28 +175,4 @@ router.put('/:idFactura/editarFacturaCliente',function(req,res){
         });
 })
 
-router.get('/obtenerVentasEmpleado/:idEmpleado', (req, res) => {
-    let result = Result.createResult();
-    facturaCliente.find({ nombreEmpleado: req.params.idEmpleado},{
-        nombreCliente: true,
-        fechaFactura: true,
-        nombreEmpleado: true,
-        subTotal: true,
-        isv: true,
-        total: true,
-        rtn: true    
-    })
-    .then((response) => {
-        result.Error = false
-        result.Response = 'Todas las facturas de clientes'
-        result.Items = response
-        res.send(result)
-    }).catch((err) => {
-        result.Error = err
-        result.Response = 'Ocurrio un error'
-        result.Success = false
-        res.send(result)
-    })
-})
-
 module.exports = router;
