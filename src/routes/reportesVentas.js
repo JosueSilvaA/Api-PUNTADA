@@ -3,6 +3,7 @@ const router = express.Router();
 const Result = require("../helpers/result");
 const facturaCliente = require("../models/facturaCliente");
 const moment = require("moment");
+const { response } = require("express");
 
 router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro", (req, res) => {
   // 2020-08-03_2020-08-07
@@ -47,4 +48,54 @@ router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro", (req, res) => {
     });
 });
 
+
+// producto mas vendido
+
+router.get('/productoMasVendido/:fecha',function(req,res){
+  let result = Result.createResult();
+  const listaProductos = [];
+  facturaCliente.find({},{productos:true})
+  .then(response=>{
+    const productosFacturaArray = response;
+    const productosUnicos = [];
+    productosFacturaArray.forEach((factura)=>{
+      factura.productos.forEach(producto=>{
+        listaProductos.push(producto)
+      })
+    })
+    
+    productosUnicos.push(listaProductos[0]);
+    
+    listaProductos.forEach((producto) =>{
+      let link = false;
+      productosUnicos.forEach((pro,index)=>{
+        if(producto.producto === pro.producto){
+          link = true;
+          productosUnicos[index].cantidad += producto.cantidad;
+        }
+      })
+      if(link ===  false){
+        productosUnicos.push(producto)
+      }
+    })
+
+    var ProductosOrdenados = productosUnicos.sort(function(a, b){  
+      if (a.cantidad > b.cantidad) {
+      return -1;
+      }
+    });
+
+    console.log('Lista ordenada ',ProductosOrdenados)
+    result.Error = false;
+    result.Response = "Producto mas vendido";
+    result.Items = ProductosOrdenados;
+    res.send(result);
+  })
+  .catch(err=>{
+    result.Error = err;
+    result.Response = "Ocurrio un error";
+    result.Success = false;
+    res.send(result);
+  });
+})
 module.exports = router;
