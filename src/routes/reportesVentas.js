@@ -51,7 +51,7 @@ router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro", (req, res) => {
 
 // producto mas vendido
 
-router.get('/productoMasVendido/:fecha',function(req,res){
+router.get('/productoMasVendido',function(req,res){
   let result = Result.createResult();
   const listaProductos = [];
   facturaCliente.find({},{productos:true})
