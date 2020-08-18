@@ -214,7 +214,7 @@ router.put('/:idUsuario/cambiarRol', function(req, res) {
         .then(response => {
             if (response.nModified === 1 && response.n === 1) {
                 result.Error = false
-                result.Response = 'Se cambio el estado del usuario'
+                result.Response = 'Se cambio el rol del usuario'
                 res.send(result)
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
