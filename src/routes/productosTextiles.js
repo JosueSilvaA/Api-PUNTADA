@@ -151,7 +151,7 @@ router.put('/:idProducto/eliminarProductoTextil',function(req,res){
 });
 
 /* Cambiar imagen producto textil */
-router.post("/cambiarImagenTextil/:idProducto",
+router.post("/cambiarImagenTextil/:idProducto", AutenticationToken,
   async (req, res) => {
     let file = req.file;
     let result = Result.createResult();

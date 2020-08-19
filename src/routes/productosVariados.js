@@ -147,7 +147,7 @@ router.put('/:idProducto/eliminarProductoVariado',function(req,res){
 });
 
 /* Cambiar imagen producto variado */
-router.post("/cambiarImagenVariado/:idProducto",
+router.post("/cambiarImagenVariado/:idProducto", AutenticationToken,
   async (req, res) => {
     let file = req.file;
     let result = Result.createResult();

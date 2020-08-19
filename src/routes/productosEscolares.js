@@ -119,7 +119,7 @@ router.put('/:idProducto/eliminarProductoEscolar',function(req,res){
 });
 
 /* Cambiar imagen producto escolar */
-router.post("/cambiarImagenEscolar/:idProducto",
+router.post("/cambiarImagenEscolar/:idProducto",AutenticationToken,
   async (req, res) => {
     let file = req.file;
     let result = Result.createResult();
