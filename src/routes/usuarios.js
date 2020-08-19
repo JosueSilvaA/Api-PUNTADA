@@ -10,7 +10,8 @@ const Privilegio = require('../models/privilegio')
 const cloudinary = require('../configs/Credenciales');
 const fs = require("fs-extra");
 const { route } = require('../middlewares/autenticationJWT')
-
+const Bitacora = require('../models/bitacora');
+const decodeJWT = require('../configs/decodedJWT');
 
 // Registrar usuario
 
@@ -29,14 +30,22 @@ router.post('/registroUsuario',AutenticationToken, async function(req, res) {
     //encrypt password
     u.contrasena = await u.encryptPassword(req.body.contrasena)
     let result = Result.createResult()
-
+    let token = decodeJWT(req.headers['access-token']);
     u.save()
         .then(response => {
             result.Error = false
             result.Items = response
             result.Response = 'Usuario registrado con exito'
             res.send(result)
-            console.log(response)
+            let nuevoRegistro = new Bitacora({
+                usuario:token.id,
+                actividad:'Se registro un nuevo usuario',
+                finalidad:'Gestion de Usuarios',
+                Categoria:'USUARIOS'
+            })
+
+            nuevoRegistro.save();
+            
         })
         .catch(err => {
             if(err.keyValue.usuario){

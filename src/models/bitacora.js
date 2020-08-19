@@ -5,7 +5,15 @@ const bitacora = new mongoose.Schema({
         type:mongoose.SchemaTypes.ObjectId,
         required:true
     },
-    accion:{
+    actividad:{
+        type:String,
+        required:true
+    },
+    finalidad:{
+        type:String,
+        required:true
+    },
+    categoria:{
         type:String,
         required:true
     },
