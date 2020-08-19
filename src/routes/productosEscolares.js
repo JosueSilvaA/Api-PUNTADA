@@ -4,6 +4,8 @@ const productoEscolar = require('../models/productoEscolar');
 const Result = require('../helpers/result');
 const mongoose = require('mongoose');
 const AutenticationToken = require('../middlewares/autenticationJWT')
+const cloudinary = require("../configs/Credenciales");
+const fs = require("fs-extra");
 // registrar un producto escolares
 
 router.post('/registroProducto',function(req,res){
@@ -115,5 +117,59 @@ router.put('/:idProducto/eliminarProductoEscolar',function(req,res){
             res.send(result)
         });
 });
+
+/* Cambiar imagen producto escolar */
+router.post("/cambiarImagenEscolar/:idProducto",
+  async (req, res) => {
+    let file = req.file;
+    let result = Result.createResult();
+    let id_publica = req.params.idProducto;
+    const borrarAnt = await cloudinary.uploader.destroy(
+      "productos/escolares" + id_publica
+    );
+
+    if (borrarAnt.error === undefined) {
+      const resultCloud = await cloudinary.uploader.upload(file.path, {
+        public_id: id_publica,
+        folder: "productos/escolares",
+        user_filename: true,
+      });
+      fs.unlink(file.path);
+      productoEscolar
+        .updateOne(
+          {
+            _id: mongoose.Types.ObjectId(id_publica),
+          },
+          {
+            imgProducto: resultCloud.secure_url,
+          }
+        )
+        .then((response) => {
+          if (response.nModified === 1 && response.n === 1) {
+            result.Error = false;
+            result.Response = "Se cambio la imagen del producto.";
+            res.send(result);
+          } else if (response.nModified === 0 && response.n === 1) {
+            result.Error = false;
+            result.Response = "No se realizo ningun cambio";
+            res.send(result);
+          } else {
+            result.Error = "Id Invalido";
+            result.Success = false;
+            res.send(result);
+          }
+        })
+        .catch((err) => {
+          result.Error = err;
+          result.Response = "Ocurrio un error";
+          res.send(result);
+        });
+    } else {
+      result.Error = true;
+      result.Response = "Ocurrio un error";
+      res.send(result);
+    }
+  }
+);
 
 module.exports = router;

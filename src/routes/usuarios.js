@@ -350,7 +350,7 @@ router.post('/obtenerRol/:idRol',function(req,res){
 
 /* Cambiar imagen de usuario */
 
-router.post("/cambiarImagenUsuario/:idUsuario", async (req, res) => {
+router.post("/cambiarImagenUsuario/:idUsuario", AutenticationToken, async (req, res) => {
   let file = req.file;
   let result = Result.createResult();
   let id_publica = req.params.idUsuario;
