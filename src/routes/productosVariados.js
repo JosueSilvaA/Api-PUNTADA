@@ -3,7 +3,7 @@ const router = express.Router();
 const productoVariado = require('../models/productoVariado');
 const Result = require('../helpers/result');
 const mongoose = require('mongoose');
-
+const AutenticationToken = require('../middlewares/autenticationJWT')
 // registrar un producto variado
 
 router.post('/registroProducto',function(req,res){
@@ -30,7 +30,7 @@ router.post('/registroProducto',function(req,res){
 
 // Obtener productos variados
 
-router.get('/obtenerProductosVariados',function(req,res){
+router.get('/obtenerProductosVariados',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoVariado.find({}).then(response=>{
         let productosActivos = [];

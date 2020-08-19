@@ -3,7 +3,7 @@ const router = express.Router();
 const productoEscolar = require('../models/productoEscolar');
 const Result = require('../helpers/result');
 const mongoose = require('mongoose');
-
+const AutenticationToken = require('../middlewares/autenticationJWT')
 // registrar un producto escolares
 
 router.post('/registroProducto',function(req,res){
@@ -32,7 +32,7 @@ router.post('/registroProducto',function(req,res){
 
 // Obtener Producto Escolar
 
-router.get('/obtenerProductosEscolares',function(req,res){
+router.get('/obtenerProductosEscolares',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoEscolar.find({}).then(response=>{
         let productosActivos = [];

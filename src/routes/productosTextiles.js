@@ -3,7 +3,7 @@ const router = express.Router();
 const productoTextil = require('../models/productoTextil');
 const Result = require('../helpers/result');
 const mongoose = require('mongoose');
-
+const AutenticationToken = require('../middlewares/autenticationJWT')
 
 // registrar un producto textil
 
@@ -33,7 +33,7 @@ router.post('/registroProducto',function(req,res){
 
 // obtener todos los productos textiles
 
-router.get('/obtenerProductosTextiles',function(req,res){
+router.get('/obtenerProductosTextiles',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoTextil.find({}).then(response=>{
         let productosActivos = [];

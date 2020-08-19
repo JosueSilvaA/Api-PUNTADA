@@ -43,24 +43,24 @@ router.post('/registroUsuario', async function(req, res) {
         })
         .catch(err => {
             if(err.keyValue.usuario){
-                result.Error = 'Este usuario ya esta registrado'
+                result.Error = err
                 result.Success = false
-                result.Response = 'Ocurrio un error'
+                result.Response = 'Este usuario ya esta registrado'
                 res.send(result)
             }else if(err.keyValue.correo){
-                result.Error = 'Este correo ya esta registrado'
+                result.Error = err
                 result.Success = false
-                result.Response = 'Ocurrio un error'
+                result.Response = 'Este correo ya esta registrado'
                 res.send(result)
             }else if(err.keyValue.identidad){
-                result.Error = 'Este numero de identidad ya esta registrado'
+                result.Error = err
                 result.Success = false
-                result.Response = 'Ocurrio un error'
+                result.Response = 'Este numero de identidad ya esta registrado'
                 res.send(result)
             }else if(err.keyValue.telefono){
-                result.Error = 'Este numero de telefono ya esta registrado'
+                result.Error = err
                 result.Success = false
-                result.Response = 'Ocurrio un error'
+                result.Response = 'Este numero de telefono ya esta registrado'
                 res.send(result)
             }else{
                 result.Error = err
@@ -74,6 +74,10 @@ router.post('/registroUsuario', async function(req, res) {
 router.post('/login', function(req, res) {
     var result = Result.createResult()
     Usuario.findOne({ usuario: req.body.usuario }, async(error, usuario) => {
+        if(!usuario.estado){
+            result.Error = 'No existe este usuario'
+            return res.json(result)
+        }
         if (error) {
             result.Error = error
             return res.json(result)
