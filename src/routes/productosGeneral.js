@@ -16,7 +16,7 @@ router.get('/obtenerProductoPorId/:idProducto', async (req, res) => {
     if (data === null) {
         data = await productoVariado.findById(req.params.idProducto)
     }
-    console.log(data)
+    
     if (data !== null) {
         result.Error = false
         result.Response = 'Productos generales'
