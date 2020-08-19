@@ -3,9 +3,10 @@ const router = express.Router();
 const Result = require("../helpers/result");
 const facturaCliente = require("../models/facturaCliente");
 const moment = require("moment");
+const AutenticationToken = require('../middlewares/autenticationJWT')
 const { response } = require("express");
 
-router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro", (req, res) => {
+router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro",AutenticationToken, (req, res) => {
   // 2020-08-03_2020-08-07
   let result = Result.createResult();
   facturaCliente
@@ -51,7 +52,7 @@ router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro", (req, res) => {
 
 // producto mas vendido
 
-router.get('/productoMasVendido',function(req,res){
+router.get('/productoMasVendido',AutenticationToken,function(req,res){
   let result = Result.createResult();
   const listaProductos = [];
   facturaCliente.find({},{productos:true})
@@ -84,8 +85,6 @@ router.get('/productoMasVendido',function(req,res){
       return -1;
       }
     });
-
-    console.log('Lista ordenada ',ProductosOrdenados)
     result.Error = false;
     result.Response = "Producto mas vendido";
     result.Items = ProductosOrdenados;

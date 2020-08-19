@@ -6,9 +6,10 @@ const mongoose = require('mongoose');
 const AutenticationToken = require('../middlewares/autenticationJWT')
 const cloudinary = require("../configs/Credenciales");
 const fs = require("fs-extra");
+
 // registrar un producto escolares
 
-router.post('/registroProducto',function(req,res){
+router.post('/registroProducto',AutenticationToken,function(req,res){
     let result = Result.createResult();
     let nuevoProducto = new productoEscolar({
         nombre:req.body.nombre,
@@ -57,7 +58,7 @@ router.get('/obtenerProductosEscolares',AutenticationToken,function(req,res){
 
 // Editar producto escolar
 
-router.put('/:idProducto/editarProductoEscolar',function(req,res){
+router.put('/:idProducto/editarProductoEscolar',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoEscolar.updateOne(
         {_id:req.params.idProducto},
@@ -93,7 +94,7 @@ router.put('/:idProducto/editarProductoEscolar',function(req,res){
 
 // Eliminar producto escolar
 
-router.put('/:idProducto/eliminarProductoEscolar',function(req,res){
+router.put('/:idProducto/eliminarProductoEscolar',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoEscolar.updateOne(
         {_id:req.params.idProducto},

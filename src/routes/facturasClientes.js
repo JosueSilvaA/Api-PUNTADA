@@ -6,10 +6,10 @@ const mongoose = require('mongoose')
 const ProductoEscolar = require('../models/productoEscolar');
 const ProductoTextil = require('../models/productoTextil');
 const ProductoVariado = require('../models/productoVariado');
-
+const AutenticationToken = require('../middlewares/autenticationJWT')
 // registrar factura cliente
 
-router.post('/registroFacturaCliente',function(req,res){
+router.post('/registroFacturaCliente',AutenticationToken,function(req,res){
     let result = Result.createResult();
     let nuevaFactura = new facturaCliente({
         nombreCliente:req.body.data.nombreCliente,
@@ -125,7 +125,7 @@ router.post('/registroFacturaCliente',function(req,res){
 
 // Obtener Facturas Clientes
 
-router.get('/obtenerFacturasClientes',function(req,res){
+router.get('/obtenerFacturasClientes',AutenticationToken,function(req,res){
     let result = Result.createResult();
     facturaCliente.find({}).then(response=>{
         result.Error = false
@@ -142,7 +142,7 @@ router.get('/obtenerFacturasClientes',function(req,res){
 
 // Editar Factura Clientes
 
-router.put('/:idFactura/editarFacturaCliente',function(req,res){
+router.put('/:idFactura/editarFacturaCliente',AutenticationToken,function(req,res){
     let result = Result.createResult();
     facturaCliente.updateOne(
         {_id:req.params.idFactura},

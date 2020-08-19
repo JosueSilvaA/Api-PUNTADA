@@ -14,7 +14,7 @@ const { route } = require('../middlewares/autenticationJWT')
 
 // Registrar usuario
 
-router.post('/registroUsuario', async function(req, res) {
+router.post('/registroUsuario',AutenticationToken, async function(req, res) {
     let u = new Usuario({
         nombres: req.body.nombres,
         apellidos: req.body.apellidos,
@@ -109,7 +109,7 @@ router.post('/login', function(req, res) {
 
 // Obtener usuarios por campos solicitados
 
-router.get('/infoUsuarios', function(req, res) {
+router.get('/infoUsuarios',AutenticationToken, function(req, res) {
     let result = Result.createResult()
     Usuario.find({}, {
             nombres: true,
@@ -141,7 +141,7 @@ router.get('/infoUsuarios', function(req, res) {
 
 // Obtener informacion de un empleado
 
-router.get('/:idUsuario/obtenerUsuario',function(req,res){
+router.get('/:idUsuario/obtenerUsuario',AutenticationToken,function(req,res){
     let result = Result.createResult()
     Usuario.findById(
         {_id:req.params.idUsuario},
@@ -174,7 +174,7 @@ router.get('/:idUsuario/obtenerUsuario',function(req,res){
 
 // Cambiar estado del Usuario
 
-router.put('/:idUsuario/cambiarEstado', function(req, res) {
+router.put('/:idUsuario/cambiarEstado',AutenticationToken,function(req, res) {
     let result = Result.createResult()
     Usuario.updateOne({
             _id: mongoose.Types.ObjectId(req.params.idUsuario)
@@ -205,7 +205,7 @@ router.put('/:idUsuario/cambiarEstado', function(req, res) {
 
 // Cambiar rol de un usuario
 
-router.put('/:idUsuario/cambiarRol', function(req, res) {
+router.put('/:idUsuario/cambiarRol',AutenticationToken, function(req, res) {
     let result = Result.createResult();
     Usuario.updateOne({
             _id: mongoose.Types.ObjectId(req.params.idUsuario)
@@ -236,7 +236,7 @@ router.put('/:idUsuario/cambiarRol', function(req, res) {
 
 // Editar Usuario
 
-router.put('/:idUsuario/editarUsuario', function(req, res) {
+router.put('/:idUsuario/editarUsuario',AutenticationToken, function(req, res) {
     let result = Result.createResult();
     Usuario.updateOne({
             _id: mongoose.Types.ObjectId(req.params.idUsuario)
@@ -271,7 +271,7 @@ router.put('/:idUsuario/editarUsuario', function(req, res) {
         });
 })
 
-router.get('/infoUsuario/:idUsuario', (req, res) => {
+router.get('/infoUsuario/:idUsuario',AutenticationToken,(req, res) => {
     let result = Result.createResult();
     Usuario.findById(req.params.idUsuario, {
         nombres: true,
@@ -297,7 +297,7 @@ router.get('/infoUsuario/:idUsuario', (req, res) => {
 })
 
 /* Servicio: Obtener Rol y Privilegios de un usuario */
-router.get('/obtenerRolPrivilegios/:idRol', async (req, res) => {
+router.get('/obtenerRolPrivilegios/:idRol',AutenticationToken, async (req, res) => {
     let result = Result.createResult();
     let rol;
     let privilegioId = [];
@@ -332,7 +332,7 @@ router.get('/obtenerRolPrivilegios/:idRol', async (req, res) => {
 
 // Obtener rol de un usuario
 
-router.post('/obtenerRol/:idRol',function(req,res){
+router.post('/obtenerRol/:idRol',AutenticationToken,function(req,res){
     let result = Result.createResult();
     Rol.findById({_id:req.params.idRol},{nombre:true})
     .then(response=>{

@@ -5,13 +5,11 @@ const Result = require('../helpers/result');
 const rol = require('../models/rol');
 const autenticar = require('../middlewares/autenticationJWT')
 const decodeJWT = require('../configs/decodedJWT')
-
-
-
+const AutenticationToken = require('../middlewares/autenticationJWT')
 
 // Registrar un privilegio
 
-router.post('/registroPrivilegio',function(req,res){
+router.post('/registroPrivilegio',AutenticationToken,function(req,res){
     let nuevoPrivilegio = new privilegio({
         nombre:req.body.nombre,
         descripcion:req.body.descripcion
@@ -34,7 +32,7 @@ router.post('/registroPrivilegio',function(req,res){
 
 // Obtener los privilegios
 
-router.get('/obtenerPrivilegios',function(req,res){
+router.get('/obtenerPrivilegios',AutenticationToken,function(req,res){
     let result = Result.createResult();
     privilegio.find({},{nombre:true,descripcion:true}).then(response=>{
         result.Error = false
@@ -52,7 +50,7 @@ router.get('/obtenerPrivilegios',function(req,res){
 
 // Privilegios que no están en un rol.
 
-router.post('/obtenerPrivilegiosNotInRol',function(req,res){
+router.post('/obtenerPrivilegiosNotInRol',AutenticationToken,function(req,res){
     let result = Result.createResult();
 
     rol.findOne({'nombre': req.body.rol}, {nombre:true, privilegios: true}).then(response => {
@@ -71,7 +69,7 @@ router.post('/obtenerPrivilegiosNotInRol',function(req,res){
    
 });
 
-router.get('/privilegiosUsuario', autenticar, (req, res) => {
+router.get('/privilegiosUsuario',AutenticationToken, autenticar, (req, res) => {
     let result = Result.createResult();
 
     const decodedToken = decodeJWT(req.headers["access-token"]);

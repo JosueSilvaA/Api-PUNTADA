@@ -8,7 +8,7 @@ const cloudinary = require("../configs/Credenciales");
 const fs = require("fs-extra");
 // registrar un producto variado
 
-router.post('/registroProducto',function(req,res){
+router.post('/registroProducto',AutenticationToken,function(req,res){
     let result = Result.createResult();
     let nuevoProducto = new productoVariado({
         nombre:req.body.nombre,
@@ -55,7 +55,7 @@ router.get('/obtenerProductosVariados',AutenticationToken,function(req,res){
 
 // Editar producto variados
 
-router.put('/:idProducto/editarProductoVariado',function(req,res){
+router.put('/:idProducto/editarProductoVariado',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoVariado.updateOne(
         {_id:req.params.idProducto},
@@ -89,7 +89,7 @@ router.put('/:idProducto/editarProductoVariado',function(req,res){
 
 // Editar Imagen del producto
 
-router.put('/:idProducto/editarImagen',function(req,res){
+router.put('/:idProducto/editarImagen',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoVariado.updateOne(
         {_id:req.params.idProducto},
@@ -121,7 +121,7 @@ router.put('/:idProducto/editarImagen',function(req,res){
 
 // Eliminar producto variado
 
-router.put('/:idProducto/eliminarProductoVariado',function(req,res){
+router.put('/:idProducto/eliminarProductoVariado',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoVariado.updateOne(
         {_id:req.params.idProducto},

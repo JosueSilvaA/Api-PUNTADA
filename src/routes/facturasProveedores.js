@@ -6,11 +6,12 @@ const ProductoTextil = require('../models/productoTextil');
 const ProductoVariado = require('../models/productoVariado');
 const Result = require('../helpers/result');
 const mongoose = require('mongoose');
+const AutenticationToken = require('../middlewares/autenticationJWT')
 
 
 // registrar factura proveedor
 
-router.post('/registroFacturaProveedor',function(req,res){
+router.post('/registroFacturaProveedor',AutenticationToken,function(req,res){
     let result = Result.createResult();
     let nuevaFactura = new facturaProveedor({
         proveedor:mongoose.Types.ObjectId(req.body.idProveedor),
@@ -123,7 +124,7 @@ router.post('/registroFacturaProveedor',function(req,res){
 
 // Obtener Facturas Proveedor
 
-router.get('/obtenerFacturasProveedores',function(req,res){
+router.get('/obtenerFacturasProveedores',AutenticationToken,function(req,res){
     let result = Result.createResult();
     facturaProveedor.find({}).then(response=>{
         result.Error = false
@@ -140,7 +141,7 @@ router.get('/obtenerFacturasProveedores',function(req,res){
 
 // Editar Factura Proveedor
 
-router.put('/:idFactura/editarFacturaProveedor',function(req,res){
+router.put('/:idFactura/editarFacturaProveedor',AutenticationToken,function(req,res){
     let result = Result.createResult();
     facturaProveedor.updateOne(
         {_id:req.params.idFactura},

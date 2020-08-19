@@ -5,8 +5,9 @@ const productoTextil = require('../models/productoTextil')
 const productoVariado = require('../models/productoVariado')
 const Result = require('../helpers/result');
 const mongoose = require('mongoose');
+const AutenticationToken = require('../middlewares/autenticationJWT')
 
-router.get('/obtenerProductoPorId/:idProducto', async (req, res) => {
+router.get('/obtenerProductoPorId/:idProducto',AutenticationToken, async (req, res) => {
     /* METODO TEMPORAL */
     let result = Result.createResult();
     let data = await productoTextil.findById(req.params.idProducto)
@@ -30,7 +31,7 @@ router.get('/obtenerProductoPorId/:idProducto', async (req, res) => {
 });
 
 /* Servicio temporal, mejorar luego */
-router.get('/obtenerProductos', async (req, res) => {
+router.get('/obtenerProductos',AutenticationToken, async (req, res) => {
     let result = Result.createResult();
 
     let productos = [];

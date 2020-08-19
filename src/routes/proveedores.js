@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-
+const AutenticationToken = require('../middlewares/autenticationJWT')
 const proveedor = require('../models/proveedor');
 const Result = require('../helpers/result');
 
 // Registro Proveedor
 
-router.post('/registroProveedor',function(req,res){
+router.post('/registroProveedor',AutenticationToken,function(req,res){
     let result = Result.createResult();
     let nuevoProveedor = new proveedor({
         nombre:req.body.nombre,
@@ -30,7 +30,7 @@ router.post('/registroProveedor',function(req,res){
 
 // Obtener Proveedores
 
-router.get('/obtenerProveedores',function(req,res){
+router.get('/obtenerProveedores',AutenticationToken,function(req,res){
     let result = Result.createResult();
     proveedor.find({}).then(response =>{
             let proveedoresActivos = [];
@@ -53,7 +53,7 @@ router.get('/obtenerProveedores',function(req,res){
 
 // Obtener Proveedor 
 
-router.get('/:idProveedor/obtenerProveedor',function(req,res){
+router.get('/:idProveedor/obtenerProveedor',AutenticationToken,function(req,res){
     let result = Result.createResult();
     proveedor.findById(
         {_id: req.params.idProveedor},
@@ -80,7 +80,7 @@ router.get('/:idProveedor/obtenerProveedor',function(req,res){
 
 // Editar Proveedor
 
-router.put('/:idProveedor/editarProveedor',function(req,res){
+router.put('/:idProveedor/editarProveedor',AutenticationToken,function(req,res){
     let result = Result.createResult();
     proveedor.updateOne(
         {_id:req.params.idProveedor},

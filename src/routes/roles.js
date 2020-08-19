@@ -4,11 +4,11 @@ const rol = require('../models/rol')
 const privilegio = require('../models/privilegio');
 const Result = require('../helpers/result')
 const mongoose = require('mongoose')
-
+const AutenticationToken = require('../middlewares/autenticationJWT')
 
 // Registrar un rol
 
-router.post('/registroRol', function(req, res) {
+router.post('/registroRol',AutenticationToken, function(req, res) {
     console.log(req.body)
     let newRol = new rol({
         nombre: req.body.nombre,
@@ -34,7 +34,7 @@ router.post('/registroRol', function(req, res) {
 
 // Obtener los roles
 
-router.get('/obtenerRoles', function(req, res) {
+router.get('/obtenerRoles',AutenticationToken, function(req, res) {
         let result = Result.createResult()
         rol
             .find({}, { nombre: true,descripcion:true})
@@ -56,7 +56,7 @@ router.get('/obtenerRoles', function(req, res) {
 
 // Registrar Privilegio
 
-router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio', function(req, res) {
+router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio',AutenticationToken, function(req, res) {
     let result = Result.createResult()
     rol
         .update({
@@ -95,7 +95,7 @@ router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio', function(req,
 
 // Obtener privilegios de un rol
 
-router.post('/:idRol/obtenerPrivilegios', function(req, res) {
+router.post('/:idRol/obtenerPrivilegios', AutenticationToken,function(req, res) {
     let result = Result.createResult()
     rol
         .find({
@@ -131,7 +131,7 @@ router.post('/:idRol/obtenerPrivilegios', function(req, res) {
 
 // Eliminar privilegio de un rol
 
-router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio', function(req, res) {
+router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio',AutenticationToken, function(req, res) {
     let result = Result.createResult();
     rol.update({
             _id: mongoose.Types.ObjectId(req.params.idRol)

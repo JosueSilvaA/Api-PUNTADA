@@ -9,7 +9,7 @@ const fs = require("fs-extra");
 
 // registrar un producto textil
 
-router.post('/registroProducto',function(req,res){
+router.post('/registroProducto',AutenticationToken,function(req,res){
     let result = Result.createResult();
     let nuevoProducto = new productoTextil({
         nombre:req.body.nombre,
@@ -58,7 +58,7 @@ router.get('/obtenerProductosTextiles',AutenticationToken,function(req,res){
 
 // Editar producto textil
 
-router.put('/:idProducto/editarProductoTextil',function(req,res){
+router.put('/:idProducto/editarProductoTextil',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoTextil.updateOne(
         {_id:req.params.idProducto},
@@ -93,7 +93,7 @@ router.put('/:idProducto/editarProductoTextil',function(req,res){
 
 // Editar Imagen del producto
 
-router.put('/:idProducto/editarImagen',function(req,res){
+router.put('/:idProducto/editarImagen',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoVariado.updateOne(
         {_id:req.params.idProducto},
@@ -125,7 +125,7 @@ router.put('/:idProducto/editarImagen',function(req,res){
 
 // Eliminar producto textil
 
-router.put('/:idProducto/eliminarProductoTextil',function(req,res){
+router.put('/:idProducto/eliminarProductoTextil',AutenticationToken,function(req,res){
     let result = Result.createResult();
     productoTextil.updateOne(
         {_id:req.params.idProducto},
