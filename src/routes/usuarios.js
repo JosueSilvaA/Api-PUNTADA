@@ -7,13 +7,10 @@ const Usuario = require('../models/usuario')
 const mongoose = require('mongoose')
 const Rol = require('../models/rol')
 const Privilegio = require('../models/privilegio')
+const cloudinary = require('../configs/Credenciales');
+const fs = require("fs-extra");
 const { route } = require('../middlewares/autenticationJWT')
 
-
-//prueba para usar autenticación con jwt
-router.post('/prueba', AutenticationToken, (req, res) => {
-    res.send('hi')
-})
 
 // Registrar usuario
 
@@ -351,5 +348,54 @@ router.post('/obtenerRol/:idRol',function(req,res){
     })
 })
 
+/* Cambiar imagen de usuario */
+
+router.post("/cambiarImagenUsuario/:idUsuario", async (req, res) => {
+  let file = req.file;
+  let result = Result.createResult();
+  let id_publica = req.params.idUsuario;
+  const borrarAnt = await cloudinary.uploader.destroy("usuarios/" + id_publica);
+
+  if (borrarAnt.error === undefined) {
+    const resultCloud = await cloudinary.uploader.upload(file.path, {
+      public_id: id_publica,
+      folder: "usuarios",
+      user_filename: true,
+    });
+    fs.unlink(file.path);
+    Usuario.updateOne(
+      {
+        _id: mongoose.Types.ObjectId(id_publica),
+      },
+      {
+        imgUsuario: resultCloud.secure_url,
+      }
+    )
+      .then((response) => {
+        if (response.nModified === 1 && response.n === 1) {
+          result.Error = false;
+          result.Response = "Se cambio la imagen del usuario";
+          res.send(result);
+        } else if (response.nModified === 0 && response.n === 1) {
+          result.Error = false;
+          result.Response = "No se realizo ningun cambio";
+          res.send(result);
+        } else {
+          result.Error = "Id Invalido";
+          result.Success = false;
+          res.send(result);
+        }
+      })
+      .catch((err) => {
+        result.Error = err;
+        result.Response = "Ocurrio un error";
+        res.send(result);
+      });
+  } else {
+    result.Error = true;
+    result.Response = "Ocurrio un error";
+    res.send(result);
+  }
+});
 
 module.exports = router

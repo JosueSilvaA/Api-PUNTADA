@@ -2,6 +2,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const jwtKey = require('./configs/jwtKey')
+const storage = require("./configs/storage");
+const multer = require('multer');//Modulo para gestion de imagenes
+const path = require("path");
+
 var database = require('./connection/connection');
 database();
 /* Import Rutas */
@@ -21,6 +25,24 @@ const app = express()
 
 //cors
 app.use(cors());
+
+// multer
+app.use(multer({
+    storage: storage,
+    dest: path.join(__dirname, 'public/uploadsProfilePics'),
+    limits: { fileSize: 10000000 },
+    fileFilter: (rq, file, cb) => {
+        const filetypes = /jpeg|jpg|png/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname));
+        if (mimetype && extname) {
+           return cb(null, true);
+        }
+        cb("Error: Archivo debe ser imagen valida");
+    }
+}).single('image'));
+
+
 
 //Server port
 app.set('port', process.env.PORT || 3000)
