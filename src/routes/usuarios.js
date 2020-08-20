@@ -9,10 +9,9 @@ const Rol = require('../models/rol')
 const Privilegio = require('../models/privilegio')
 const cloudinary = require('../configs/Credenciales');
 const fs = require("fs-extra");
-const { route } = require('../middlewares/autenticationJWT')
 const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
-const estructura = require('../helpers/esquemaBitacora')
+
 
 // Registrar usuario
 

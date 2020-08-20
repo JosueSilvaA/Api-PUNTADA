@@ -6,11 +6,14 @@ const mongoose = require('mongoose');
 const AutenticationToken = require('../middlewares/autenticationJWT')
 const cloudinary = require("../configs/Credenciales");
 const fs = require("fs-extra");
+const estructuraBitacora = require('../helpers/esquemaBitacora');
+const decodeJWT = require('../configs/decodedJWT');
 
 // registrar un producto textil
 
 router.post('/registroProducto',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     let nuevoProducto = new productoTextil({
         nombre:req.body.nombre,
         color:req.body.color,
@@ -25,6 +28,13 @@ router.post('/registroProducto',AutenticationToken,function(req,res){
         result.Response = 'Producto Textil registrado con exito'
         result.Items = response
         res.send(result)
+        estructuraBitacora(
+            token.id,
+            response._id,
+            'Se registro un producto textil',
+            'Gestion Productos Textiles',
+            'PRODUCTOS TEXTILES'
+          )
     }).catch(err=>{
         result.Error = err
         result.Response = 'Ocurrio un error'
@@ -60,6 +70,7 @@ router.get('/obtenerProductosTextiles',AutenticationToken,function(req,res){
 
 router.put('/:idProducto/editarProductoTextil',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     productoTextil.updateOne(
         {_id:req.params.idProducto},
         {
@@ -74,6 +85,13 @@ router.put('/:idProducto/editarProductoTextil',AutenticationToken,function(req,r
                 result.Error = false
                 result.Response = 'Se modifico la informacion del producto'
                 res.send(result)
+                estructuraBitacora(
+                    token.id,
+                    req.params.idProducto,
+                    'Se edito un producto textil',
+                    'Gestion Productos Textiles',
+                    'PRODUCTOS TEXTILES'
+                  )
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -127,6 +145,7 @@ router.put('/:idProducto/editarImagen',AutenticationToken,function(req,res){
 
 router.put('/:idProducto/eliminarProductoTextil',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     productoTextil.updateOne(
         {_id:req.params.idProducto},
         {
@@ -137,6 +156,13 @@ router.put('/:idProducto/eliminarProductoTextil',AutenticationToken,function(req
                 result.Error = false
                 result.Response = 'Se elimino el producto con exito'
                 res.send(result)
+                estructuraBitacora(
+                    token.id,
+                    req.params.idProducto,
+                    'Se elimino un producto textil',
+                    'Gestion Productos Textiles',
+                    'PRODUCTOS TEXTILES'
+                  )
             }else{
                 result.Error = 'Id Invalido'
                 result.Success = false
@@ -153,6 +179,7 @@ router.put('/:idProducto/eliminarProductoTextil',AutenticationToken,function(req
 /* Cambiar imagen producto textil */
 router.post("/cambiarImagenTextil/:idProducto", AutenticationToken,
   async (req, res) => {
+    let token = decodeJWT(req.headers['access-token']);
     let file = req.file;
     let result = Result.createResult();
     let id_publica = req.params.idProducto;
@@ -181,6 +208,13 @@ router.post("/cambiarImagenTextil/:idProducto", AutenticationToken,
             result.Error = false;
             result.Response = "Se cambio la imagen del producto.";
             res.send(result);
+            estructuraBitacora(
+                token.id,
+                req.params.idProducto,
+                'Se modifico la imagen de un producto textil',
+                'Gestion Productos Textiles',
+                'PRODUCTOS TEXTILES'
+              )
           } else if (response.nModified === 0 && response.n === 1) {
             result.Error = false;
             result.Response = "No se realizo ningun cambio";

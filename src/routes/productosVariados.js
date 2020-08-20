@@ -6,10 +6,13 @@ const mongoose = require('mongoose');
 const AutenticationToken = require('../middlewares/autenticationJWT')
 const cloudinary = require("../configs/Credenciales");
 const fs = require("fs-extra");
+const estructuraBitacora = require('../helpers/esquemaBitacora');
+const decodeJWT = require('../configs/decodedJWT');
 // registrar un producto variado
 
 router.post('/registroProducto',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     let nuevoProducto = new productoVariado({
         nombre:req.body.nombre,
         proveedor:mongoose.Types.ObjectId(req.body.proveedor),
@@ -22,6 +25,13 @@ router.post('/registroProducto',AutenticationToken,function(req,res){
         result.Response = 'Producto Variado registrado con exito'
         result.Items = response
         res.send(result)
+        estructuraBitacora(
+            token.id,
+            response._id,
+            'Se registro un producto variado',
+            'Gestion Productos Variados',
+            'PRODUCTOS VARIADOS'
+          )
     }).catch(err=>{
         result.Error = err
         result.Response = 'Ocurrio un error'
@@ -57,6 +67,7 @@ router.get('/obtenerProductosVariados',AutenticationToken,function(req,res){
 
 router.put('/:idProducto/editarProductoVariado',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     productoVariado.updateOne(
         {_id:req.params.idProducto},
         {
@@ -70,6 +81,13 @@ router.put('/:idProducto/editarProductoVariado',AutenticationToken,function(req,
                 result.Error = false
                 result.Response = 'Se modifico la informacion del producto'
                 res.send(result)
+                estructuraBitacora(
+                    token.id,
+                    req.params.idProducto,
+                    'Se edito un producto variado',
+                    'Gestion Productos Variados',
+                    'PRODUCTOS VARIADOS'
+                  )
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -123,6 +141,7 @@ router.put('/:idProducto/editarImagen',AutenticationToken,function(req,res){
 
 router.put('/:idProducto/eliminarProductoVariado',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     productoVariado.updateOne(
         {_id:req.params.idProducto},
         {
@@ -133,6 +152,13 @@ router.put('/:idProducto/eliminarProductoVariado',AutenticationToken,function(re
                 result.Error = false
                 result.Response = 'Se elimino el producto con exito'
                 res.send(result)
+                estructuraBitacora(
+                    token.id,
+                    req.params.idProducto,
+                    'Se elimino un producto variado',
+                    'Gestion Productos Variados',
+                    'PRODUCTOS VARIADOS'
+                  )
             }else{
                 result.Error = 'Id Invalido'
                 result.Success = false
@@ -149,6 +175,7 @@ router.put('/:idProducto/eliminarProductoVariado',AutenticationToken,function(re
 /* Cambiar imagen producto variado */
 router.post("/cambiarImagenVariado/:idProducto", AutenticationToken,
   async (req, res) => {
+    let token = decodeJWT(req.headers['access-token']);
     let file = req.file;
     let result = Result.createResult();
     let id_publica = req.params.idProducto;
@@ -177,6 +204,13 @@ router.post("/cambiarImagenVariado/:idProducto", AutenticationToken,
             result.Error = false;
             result.Response = "Se cambio la imagen del producto.";
             res.send(result);
+            estructuraBitacora(
+                token.id,
+                req.params.idProducto,
+                'Se modifico la imagen de un producto variado',
+                'Gestion Productos Variados',
+                'PRODUCTOS VARIADOS'
+              )
           } else if (response.nModified === 0 && response.n === 1) {
             result.Error = false;
             result.Response = "No se realizo ningun cambio";

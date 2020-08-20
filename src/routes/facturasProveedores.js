@@ -7,12 +7,14 @@ const ProductoVariado = require('../models/productoVariado');
 const Result = require('../helpers/result');
 const mongoose = require('mongoose');
 const AutenticationToken = require('../middlewares/autenticationJWT')
-
+const estructuraBitacora = require('../helpers/esquemaBitacora');
+const decodeJWT = require('../configs/decodedJWT');
 
 // registrar factura proveedor
 
 router.post('/registroFacturaProveedor',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     let nuevaFactura = new facturaProveedor({
         proveedor:mongoose.Types.ObjectId(req.body.idProveedor),
         fechaFactura:req.body.data.fechaFactura,
@@ -113,6 +115,13 @@ router.post('/registroFacturaProveedor',AutenticationToken,function(req,res){
         result.Response = 'Factura de Proveedor registrada con exito'
         result.Items = response
         res.send(result)
+        estructuraBitacora(
+            token.id,
+            response._id,
+            'Se registro una factura',
+            'Gestion Facturas de Proveedores',
+            'FACTURAS PROVEEDORES'
+        )
     }).catch(err =>{
         result.Error = err
         result.Response = 'Ocurrio un error'
@@ -143,6 +152,7 @@ router.get('/obtenerFacturasProveedores',AutenticationToken,function(req,res){
 
 router.put('/:idFactura/editarFacturaProveedor',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     facturaProveedor.updateOne(
         {_id:req.params.idFactura},
         {
@@ -154,6 +164,13 @@ router.put('/:idFactura/editarFacturaProveedor',AutenticationToken,function(req,
                 result.Error = false
                 result.Response = 'Se modifico la informacion de la factura'
                 res.send(result)
+                estructuraBitacora(
+                    token.id,
+                    req.params.idFactura,
+                    'Se edito una factura',
+                    'Gestion Facturas de Proveedores',
+                    'FACTURAS PROVEEDORES'
+                )
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'

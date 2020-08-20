@@ -3,11 +3,13 @@ const router = express.Router();
 const AutenticationToken = require('../middlewares/autenticationJWT')
 const proveedor = require('../models/proveedor');
 const Result = require('../helpers/result');
-
+const estructuraBitacora = require('../helpers/esquemaBitacora');
+const decodeJWT = require('../configs/decodedJWT');
 // Registro Proveedor
 
 router.post('/registroProveedor',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     let nuevoProveedor = new proveedor({
         nombre:req.body.nombre,
         rtn:req.body.rtn,
@@ -20,6 +22,13 @@ router.post('/registroProveedor',AutenticationToken,function(req,res){
         result.Response = 'Proveedor registrado con exito'
         result.Items = response
         res.send(result)
+        estructuraBitacora(
+            token.id,
+            response._id,
+            'Se registro un proveedor',
+            'Gestion Proveedores',
+            'PROVEEDORES'
+          )
     }).catch(err=>{
         result.Error = err
         result.Response = 'Ocurrio un error'
@@ -82,6 +91,7 @@ router.get('/:idProveedor/obtenerProveedor',AutenticationToken,function(req,res)
 
 router.put('/:idProveedor/editarProveedor',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     proveedor.updateOne(
         {_id:req.params.idProveedor},
         {
@@ -96,6 +106,13 @@ router.put('/:idProveedor/editarProveedor',AutenticationToken,function(req,res){
             result.Error = false
             result.Response = 'Se edito el proveedor con exito'
             res.send(result)
+            estructuraBitacora(
+                token.id,
+                req.params.idProveedor,
+                'Se edito un proveedor',
+                'Gestion Proveedores',
+                'PROVEEDORES'
+              )
         } else if (response.nModified === 0 && response.n === 1) {
             result.Error = false
             result.Response = 'No se realizo ningun cambio'

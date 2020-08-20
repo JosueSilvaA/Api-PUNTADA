@@ -4,11 +4,14 @@ const Result = require("../helpers/result");
 const facturaCliente = require("../models/facturaCliente");
 const moment = require("moment");
 const AutenticationToken = require('../middlewares/autenticationJWT')
-const { response } = require("express");
+const estructuraBitacora = require('../helpers/esquemaBitacora');
+const decodeJWT = require('../configs/decodedJWT');
+
 
 router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro",AutenticationToken, (req, res) => {
   // 2020-08-03_2020-08-07
   let result = Result.createResult();
+  let token = decodeJWT(req.headers['access-token']);
   facturaCliente
     .find(
       { nombreEmpleado: req.params.idEmpleado },
@@ -40,6 +43,13 @@ router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro",AutenticationTok
       result.Error = false;
       result.Response = "Ventas realizadas por el empleado.";
       res.send(result);
+      estructuraBitacora(
+        token.id,
+        response._id,
+        'Se realizo un reporte de ventas por empleado',
+        'Gestion de Reportes',
+        'REPORTES DE VENTAS POR EMPLEADO'
+      )
     })
     .catch((err) => {
       result.Error = err;
@@ -55,6 +65,7 @@ router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro",AutenticationTok
 router.get('/productoMasVendido',AutenticationToken,function(req,res){
   let result = Result.createResult();
   const listaProductos = [];
+  let token = decodeJWT(req.headers['access-token']);
   facturaCliente.find({},{productos:true})
   .then(response=>{
     const productosFacturaArray = response;
@@ -89,6 +100,13 @@ router.get('/productoMasVendido',AutenticationToken,function(req,res){
     result.Response = "Producto mas vendido";
     result.Items = ProductosOrdenados;
     res.send(result);
+    estructuraBitacora(
+      token.id,
+      ProductosOrdenados[0].producto,
+      'Se realizo un reporte de productos mas vendidos',
+      'Gestion de Reportes',
+      'REPORTES DE PRODUCTO MAS VENDIDO'
+    )
   })
   .catch(err=>{
     result.Error = err;

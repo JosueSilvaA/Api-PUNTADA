@@ -7,10 +7,14 @@ const ProductoEscolar = require('../models/productoEscolar');
 const ProductoTextil = require('../models/productoTextil');
 const ProductoVariado = require('../models/productoVariado');
 const AutenticationToken = require('../middlewares/autenticationJWT')
+const estructuraBitacora = require('../helpers/esquemaBitacora');
+const decodeJWT = require('../configs/decodedJWT');
+
 // registrar factura cliente
 
 router.post('/registroFacturaCliente',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     let nuevaFactura = new facturaCliente({
         nombreCliente:req.body.data.nombreCliente,
         rtn:req.body.data.rtn,
@@ -114,6 +118,13 @@ router.post('/registroFacturaCliente',AutenticationToken,function(req,res){
         result.Response = 'Factura de Cliente registrada con exito'
         result.Items = response
         res.send(result)
+        estructuraBitacora(
+            token.id,
+            response._id,
+            'Se registro una factura',
+            'Gestion Facturas de Clientes',
+            'FACTURAS CLIENTES'
+        )
     }).catch(err =>{
         result.Error = err
         result.Response = 'Ocurrio un error'
@@ -144,6 +155,7 @@ router.get('/obtenerFacturasClientes',AutenticationToken,function(req,res){
 
 router.put('/:idFactura/editarFacturaCliente',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     facturaCliente.updateOne(
         {_id:req.params.idFactura},
         {
@@ -158,6 +170,13 @@ router.put('/:idFactura/editarFacturaCliente',AutenticationToken,function(req,re
                 result.Error = false
                 result.Response = 'Se modifico la informacion de la factura'
                 res.send(result)
+                estructuraBitacora(
+                    token.id,
+                    req.params.idFactura,
+                    'Se edito una factura',
+                    'Gestion Facturas de Clientes',
+                    'FACTURAS CLIENTES'
+                )
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'

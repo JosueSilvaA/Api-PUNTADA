@@ -20,6 +20,7 @@ const productoGeneral = require('./routes/productosGeneral')
 const facturaClienteRouter = require('./routes/facturasClientes');
 const facturaProveedorRouter = require('./routes/facturasProveedores');
 const reporteVentas = require('./routes/reportesVentas');
+const bitacoraRouter = require('./routes/bitacoras');
 //express
 const app = express()
 
@@ -73,6 +74,7 @@ app.use('/api/productoGeneral',productoGeneral);
 app.use('/api/facturaCliente',facturaClienteRouter);
 app.use('/api/facturaProveedor/',facturaProveedorRouter);
 app.use('/api/reporteVentas', reporteVentas);
+app.use('/api/bitacora',bitacoraRouter);
 //Cacth error on routes
 app.use((req, res, next) => {
     console.log('Ruta desconocida')

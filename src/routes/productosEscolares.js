@@ -6,11 +6,13 @@ const mongoose = require('mongoose');
 const AutenticationToken = require('../middlewares/autenticationJWT')
 const cloudinary = require("../configs/Credenciales");
 const fs = require("fs-extra");
-
+const estructuraBitacora = require('../helpers/esquemaBitacora');
+const decodeJWT = require('../configs/decodedJWT');
 // registrar un producto escolares
 
 router.post('/registroProducto',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     let nuevoProducto = new productoEscolar({
         nombre:req.body.nombre,
         marca:req.body.marca,
@@ -25,6 +27,13 @@ router.post('/registroProducto',AutenticationToken,function(req,res){
         result.Response = 'Producto Escolar registrado con exito'
         result.Items = response
         res.send(result)
+        estructuraBitacora(
+          token.id,
+          response._id,
+          'Se registro un producto escolar',
+          'Gestion Productos Escolares',
+          'PRODUCTOS ESCOLARES'
+        )
     }).catch(err=>{
         result.Error = err
         result.Response = 'Ocurrio un error'
@@ -60,6 +69,7 @@ router.get('/obtenerProductosEscolares',AutenticationToken,function(req,res){
 
 router.put('/:idProducto/editarProductoEscolar',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     productoEscolar.updateOne(
         {_id:req.params.idProducto},
         {
@@ -75,6 +85,13 @@ router.put('/:idProducto/editarProductoEscolar',AutenticationToken,function(req,
                 result.Error = false
                 result.Response = 'Se modifico la informacion del producto'
                 res.send(result)
+                estructuraBitacora(
+                  token.id,
+                  req.params.idProducto,
+                  'Se edito un producto escolar',
+                  'Gestion Productos Escolares',
+                  'PRODUCTOS ESCOLARES'
+                )
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -96,6 +113,7 @@ router.put('/:idProducto/editarProductoEscolar',AutenticationToken,function(req,
 
 router.put('/:idProducto/eliminarProductoEscolar',AutenticationToken,function(req,res){
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     productoEscolar.updateOne(
         {_id:req.params.idProducto},
         {
@@ -106,6 +124,13 @@ router.put('/:idProducto/eliminarProductoEscolar',AutenticationToken,function(re
                 result.Error = false
                 result.Response = 'Se elimino el producto con exito'
                 res.send(result)
+                estructuraBitacora(
+                  token.id,
+                  req.params.idProducto,
+                  'Se elimino un producto escolar',
+                  'Gestion Productos Escolares',
+                  'PRODUCTOS ESCOLARES'
+                )
             }else{
                 result.Error = 'Id Invalido'
                 result.Success = false
@@ -122,6 +147,7 @@ router.put('/:idProducto/eliminarProductoEscolar',AutenticationToken,function(re
 /* Cambiar imagen producto escolar */
 router.post("/cambiarImagenEscolar/:idProducto",AutenticationToken,
   async (req, res) => {
+    let token = decodeJWT(req.headers['access-token']);
     let file = req.file;
     let result = Result.createResult();
     let id_publica = req.params.idProducto;
@@ -150,6 +176,13 @@ router.post("/cambiarImagenEscolar/:idProducto",AutenticationToken,
             result.Error = false;
             result.Response = "Se cambio la imagen del producto.";
             res.send(result);
+            estructuraBitacora(
+              token.id,
+              req.params.idProducto,
+              'Se modifico la imagen de un producto escolar',
+              'Gestion Productos Escolares',
+              'PRODUCTOS ESCOLARES'
+            )
           } else if (response.nModified === 0 && response.n === 1) {
             result.Error = false;
             result.Response = "No se realizo ningun cambio";
