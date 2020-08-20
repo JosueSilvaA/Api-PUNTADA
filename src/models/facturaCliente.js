@@ -27,6 +27,7 @@ const facturaCliente = new mongoose.Schema({
     },
     nombreEmpleado:{
         type:mongoose.SchemaTypes.ObjectId,
+        ref: 'usuario',
         required:true
     },
     subTotal:{

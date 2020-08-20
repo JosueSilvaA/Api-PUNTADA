@@ -27,7 +27,6 @@ router.get('/obtenerBitacoraGeneral',AutenticationToken,function(req,res){
 
 router.get('/obtenerBitacoraEmpleado/:idUsuario',AutenticationToken,function(req,res){
     let result = Result.createResult();
-    console.log(req.params.idUsuario)
     bitacora.findOne({ usuario :req.params.idUsuario})
     .then(response=>{
         result.Error = false

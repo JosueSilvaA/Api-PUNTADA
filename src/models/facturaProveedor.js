@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const facturaProveedor = new mongoose.Schema({
     proveedor:{
         type:mongoose.SchemaTypes.ObjectId,
+        ref: 'proveedores',
         required:true
     },
     fechaFactura:{
