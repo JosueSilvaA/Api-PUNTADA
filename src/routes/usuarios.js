@@ -10,12 +10,14 @@ const Privilegio = require('../models/privilegio')
 const cloudinary = require('../configs/Credenciales');
 const fs = require("fs-extra");
 const { route } = require('../middlewares/autenticationJWT')
-const Bitacora = require('../models/bitacora');
+const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
+const estructura = require('../helpers/esquemaBitacora')
 
 // Registrar usuario
 
 router.post('/registroUsuario',AutenticationToken, async function(req, res) {
+    let token = decodeJWT(req.headers['access-token']);
     let u = new Usuario({
         nombres: req.body.nombres,
         apellidos: req.body.apellidos,
@@ -30,22 +32,19 @@ router.post('/registroUsuario',AutenticationToken, async function(req, res) {
     //encrypt password
     u.contrasena = await u.encryptPassword(req.body.contrasena)
     let result = Result.createResult()
-    let token = decodeJWT(req.headers['access-token']);
     u.save()
         .then(response => {
-            let nuevoRegistro = new Bitacora({
-                usuario:token.id,
-                actividad:'Se registro un nuevo usuario',
-                finalidad:'Gestion de Usuarios',
-                Categoria:'USUARIOS'
-            })
-            nuevoRegistro.save().then(resultado=>{
-                console.log('Se registro la bitacora')
-            })
             result.Error = false
             result.Items = response
             result.Response = 'Usuario registrado exitosamente'
             res.send(result)
+            estructuraBitacora(
+                token.id,
+                response._id,
+                'Se registro un usuario',
+                'Gestion Usuarios',
+                'USUARIOS'
+            )
         })
         .catch(err => {
             if(err.keyValue.usuario){
@@ -184,17 +183,25 @@ router.get('/:idUsuario/obtenerUsuario',AutenticationToken,function(req,res){
 // Cambiar estado del Usuario
 
 router.put('/:idUsuario/cambiarEstado',AutenticationToken,function(req, res) {
+    let token = decodeJWT(req.headers['access-token']);
     let result = Result.createResult()
     Usuario.updateOne({
             _id: mongoose.Types.ObjectId(req.params.idUsuario)
         }, {
-            estado: req.body.estado
+            estado: false
         })
         .then(response => {
             if (response.nModified === 1 && response.n === 1) {
                 result.Error = false
                 result.Response = 'Se cambio el estado del usuario'
                 res.send(result)
+                estructuraBitacora(
+                    token.id,
+                    req.params.idUsuario,
+                    'Se elimino un usuario',
+                    'Gestion Usuarios',
+                    'USUARIOS'
+                    )
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -216,6 +223,7 @@ router.put('/:idUsuario/cambiarEstado',AutenticationToken,function(req, res) {
 
 router.put('/:idUsuario/cambiarRol',AutenticationToken, function(req, res) {
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     Usuario.updateOne({
             _id: mongoose.Types.ObjectId(req.params.idUsuario)
         }, {
@@ -226,6 +234,13 @@ router.put('/:idUsuario/cambiarRol',AutenticationToken, function(req, res) {
                 result.Error = false
                 result.Response = 'Se cambio el rol del usuario'
                 res.send(result)
+                estructuraBitacora(
+                    token.id,
+                    req.params.idUsuario,
+                    'Se modifico el rol del usuario',
+                    'Gestion Usuarios',
+                    'USUARIOS'
+                )
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -247,6 +262,7 @@ router.put('/:idUsuario/cambiarRol',AutenticationToken, function(req, res) {
 
 router.put('/:idUsuario/editarUsuario',AutenticationToken, function(req, res) {
     let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
     Usuario.updateOne({
             _id: mongoose.Types.ObjectId(req.params.idUsuario)
         }, {
@@ -263,6 +279,13 @@ router.put('/:idUsuario/editarUsuario',AutenticationToken, function(req, res) {
                 result.Error = false
                 result.Response = 'Se modifico la informacion del usuario con exito'
                 res.send(result)
+                estructuraBitacora(
+                    token.id,
+                    req.params.idUsuario,
+                    'Se modifico la informacion del usuario',
+                    'Gestion Usuarios',
+                    'USUARIOS'
+                )
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -363,6 +386,7 @@ router.post("/cambiarImagenUsuario/:idUsuario", AutenticationToken, async (req, 
   let file = req.file;
   let result = Result.createResult();
   let id_publica = req.params.idUsuario;
+  let token = decodeJWT(req.headers['access-token']);
   const borrarAnt = await cloudinary.uploader.destroy("usuarios/" + id_publica);
 
   if (borrarAnt.error === undefined) {
@@ -385,6 +409,13 @@ router.post("/cambiarImagenUsuario/:idUsuario", AutenticationToken, async (req, 
           result.Error = false;
           result.Response = "Se cambio la imagen del usuario";
           res.send(result);
+          estructuraBitacora(
+            token.id,
+            req.params.idUsuario,
+            'Se modifico la imagen de perfil del usuario',
+            'Gestion Usuarios',
+            'USUARIOS'
+        )
         } else if (response.nModified === 0 && response.n === 1) {
           result.Error = false;
           result.Response = "No se realizo ningun cambio";

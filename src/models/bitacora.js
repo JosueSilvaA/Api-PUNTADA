@@ -5,6 +5,10 @@ const bitacora = new mongoose.Schema({
         type:mongoose.SchemaTypes.ObjectId,
         required:true
     },
+    entidadAlterada:{
+        type:mongoose.SchemaTypes.ObjectId,
+        required:true
+    },
     actividad:{
         type:String,
         required:true
@@ -23,4 +27,4 @@ const bitacora = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('bitacora',bitacora);
+module.exports = mongoose.model('bitacoras',bitacora);
