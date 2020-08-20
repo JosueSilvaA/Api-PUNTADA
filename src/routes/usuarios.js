@@ -33,19 +33,19 @@ router.post('/registroUsuario',AutenticationToken, async function(req, res) {
     let token = decodeJWT(req.headers['access-token']);
     u.save()
         .then(response => {
-            result.Error = false
-            result.Items = response
-            result.Response = 'Usuario registrado con exito'
-            res.send(result)
             let nuevoRegistro = new Bitacora({
                 usuario:token.id,
                 actividad:'Se registro un nuevo usuario',
                 finalidad:'Gestion de Usuarios',
                 Categoria:'USUARIOS'
             })
-
-            nuevoRegistro.save();
-            
+            nuevoRegistro.save().then(resultado=>{
+                console.log('Se registro la bitacora')
+            })
+            result.Error = false
+            result.Items = response
+            result.Response = 'Usuario registrado exitosamente'
+            res.send(result)
         })
         .catch(err => {
             if(err.keyValue.usuario){
