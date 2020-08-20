@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
+const Usuario = require('./usuario');
 
 const bitacora = new mongoose.Schema({
     usuario:{
         type:mongoose.SchemaTypes.ObjectId,
+        ref: 'usuario',
         required:true
     },
     entidadAlterada:{

@@ -9,6 +9,7 @@ const bitacora = require('../models/bitacora')
 router.get('/obtenerBitacoraGeneral',AutenticationToken,function(req,res){
     let result = Result.createResult();
     bitacora.find({})
+    .populate('usuario', 'usuario')
     .then(response=>{
         result.Error = false
         result.Response = 'Bitacora General'
