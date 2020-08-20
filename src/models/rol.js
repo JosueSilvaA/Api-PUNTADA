@@ -11,10 +11,7 @@ const rol = new mongoose.Schema({
         required:true,
         unique:true
     },
-    privilegios:{
-        type:Array,
-        default:[]
-    }
+    privilegios:[{type: mongoose.Schema.Types.ObjectId, ref: 'privilegios'}]
 });
 
 module.exports = mongoose.model('roles',rol);

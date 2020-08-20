@@ -74,7 +74,7 @@ router.get('/privilegiosUsuario',AutenticationToken, autenticar, (req, res) => {
 
     const decodedToken = decodeJWT(req.headers["access-token"]);
     let privilegios;
-    if (decodedToken.rol === "5f0ccc649f8a780c206d9d9e") {
+    if (decodedToken.rol === "5f3ec44ea0dd5148fedd3661") {
       privilegios = {
         users: true,
         editProduct: true,
@@ -96,26 +96,26 @@ router.get('/privilegiosUsuario',AutenticationToken, autenticar, (req, res) => {
         mostSelledProducts: true,
       };
     } else if (decodedToken.rol === "5f0cd30b40fbd42fb0278891") {
-        privilegios = {
-          users: false,
-          editProduct: true,
-          deleteProduc: false,
-          newProduct: true,
-          mainReport: false,
-          MainInventory: true,
-          catalogo: true,
-          clientInvoice: true,
-          providerInvoice: true,
-          roles: false,
-          manageRole: false,
-          invoiceList: true,
-          mainInvoice: true,
-          employeeSalesReport: false,
-          VentasDiarias: true,
-          bitacora: false,
-          providers: true,
-          mostSelledProducts: true,
-        };
+      privilegios = {
+        users: false,
+        editProduct: true,
+        deleteProduc: false,
+        newProduct: true,
+        mainReport: false,
+        MainInventory: true,
+        catalogo: true,
+        clientInvoice: true,
+        providerInvoice: true,
+        roles: false,
+        manageRole: false,
+        invoiceList: true,
+        mainInvoice: true,
+        employeeSalesReport: false,
+        VentasDiarias: true,
+        bitacora: false,
+        providers: true,
+        mostSelledProducts: true,
+      };
     }
     result.Error = false;
     result.Response = "Privilegios del usuario.";

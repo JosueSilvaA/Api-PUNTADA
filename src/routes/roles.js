@@ -4,12 +4,12 @@ const rol = require('../models/rol')
 const privilegio = require('../models/privilegio');
 const Result = require('../helpers/result')
 const mongoose = require('mongoose')
-const AutenticationToken = require('../middlewares/autenticationJWT')
+const AutenticationToken = require('../middlewares/autenticationJWT');
+const { populate } = require('../models/rol');
 
 // Registrar un rol
 
 router.post('/registroRol',AutenticationToken, function(req, res) {
-    console.log(req.body)
     let newRol = new rol({
         nombre: req.body.nombre,
         descripcion:req.body.descripcion
@@ -37,7 +37,8 @@ router.post('/registroRol',AutenticationToken, function(req, res) {
 router.get('/obtenerRoles',AutenticationToken, function(req, res) {
         let result = Result.createResult()
         rol
-            .find({}, { nombre: true,descripcion:true})
+            .find({})
+            .populate('privilegios', 'nombre')
             .then(response => {
                 result.Error = false
                 result.Response = 'Todos los roles'
@@ -54,12 +55,12 @@ router.get('/obtenerRoles',AutenticationToken, function(req, res) {
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Registrar Privilegio
+/* Agregar un Privilegio a un Rol */
 
 router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio',AutenticationToken, function(req, res) {
     let result = Result.createResult()
     rol
-        .update({
+        .updateOne({
             _id: mongoose.Types.ObjectId(req.params.idRol)
         }, {
             $push: {
@@ -162,6 +163,34 @@ router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio',Autenticati
             res.send(result)
         });
 });
+
+/* Registrar un privilegio */
+router.post(
+  "/registroPrivilegio",
+  AutenticationToken,
+   (req, res) => {
+       let result = Result.createResult();
+      let newPrivilegio = new privilegio({
+        nombre: req.body.nombre,
+        descripcion: req.body.descripcion,
+      });
+
+      newPrivilegio
+        .save()
+        .then((response) => {
+          result.Error = false;
+          result.Response = "Privilegio registrado con exito";
+          result.Items = response;
+          res.send(result);
+        })
+        .catch((err) => {
+          result.Error = err;
+          result.Response = "Ocurrio un error";
+          result.Success = false;
+          res.send(result);
+        });
+  }
+);
 
 
 module.exports = router
