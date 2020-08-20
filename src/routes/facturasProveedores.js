@@ -135,7 +135,9 @@ router.post('/registroFacturaProveedor',AutenticationToken,function(req,res){
 
 router.get('/obtenerFacturasProveedores',AutenticationToken,function(req,res){
     let result = Result.createResult();
-    facturaProveedor.find({}).then(response=>{
+    facturaProveedor.find({})
+    .populate('proveedor', 'nombre')
+    .then(response=>{
         result.Error = false
         result.Response = 'Todas las facturas de proveedores'
         result.Items = response

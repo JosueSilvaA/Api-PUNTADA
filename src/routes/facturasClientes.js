@@ -138,7 +138,10 @@ router.post('/registroFacturaCliente',AutenticationToken,function(req,res){
 
 router.get('/obtenerFacturasClientes',AutenticationToken,function(req,res){
     let result = Result.createResult();
-    facturaCliente.find({}).then(response=>{
+    facturaCliente.find({})
+    .populate('nombreEmpleado', 'nombres apellidos')
+    .then(response=>{
+        console.log(response);
         result.Error = false
         result.Response = 'Todas las facturas de clientes'
         result.Items = response
