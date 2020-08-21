@@ -8,15 +8,27 @@ const mongoose = require('mongoose');
 const AutenticationToken = require('../middlewares/autenticationJWT')
 
 router.get('/obtenerProductoPorId/:idProducto',AutenticationToken, async (req, res) => {
-    /* METODO TEMPORAL */
     let result = Result.createResult();
-    let data = await (await productoTextil.findById(req.params.idProducto)).populated('proveedor')
-    if (data === null) {
-        data = await (await productoEscolar.findById(req.params.idProducto)).populated('proveedor')
-    }
-    if (data === null) {
-        data = await (await productoVariado.findById(req.params.idProducto)).populated('proveedor')
-    }
+    let data;
+   await productoEscolar.findById(req.params.idProducto)
+    .populate('proveedor', 'nombre')
+    .then(async (resEscolar) => {
+        data = resEscolar;
+        if (data === null || data === undefined) {
+            await productoTextil.findById(req.params.idProducto)
+            .populate('proveedor', 'nombre')
+            .then( async (resTextil) => {
+                data = resTextil;
+                if (data === null || data === undefined) {
+                    await productoVariado.findById(req.params.idProducto)
+                    .populate('proveedor', 'nombre')
+                    .then((resVariado) => {
+                        data = resVariado;
+                    })
+                }
+            })      
+        }
+    })
     
     if (data !== null) {
         result.Error = false
