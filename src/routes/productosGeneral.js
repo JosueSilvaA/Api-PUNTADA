@@ -10,12 +10,12 @@ const AutenticationToken = require('../middlewares/autenticationJWT')
 router.get('/obtenerProductoPorId/:idProducto',AutenticationToken, async (req, res) => {
     /* METODO TEMPORAL */
     let result = Result.createResult();
-    let data = await productoTextil.findById(req.params.idProducto)
+    let data = await (await productoTextil.findById(req.params.idProducto)).populated('proveedor')
     if (data === null) {
-        data = await productoEscolar.findById(req.params.idProducto)
+        data = await (await productoEscolar.findById(req.params.idProducto)).populated('proveedor')
     }
     if (data === null) {
-        data = await productoVariado.findById(req.params.idProducto)
+        data = await (await productoVariado.findById(req.params.idProducto)).populated('proveedor')
     }
     
     if (data !== null) {

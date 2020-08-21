@@ -27,6 +27,7 @@ const productoTextil = new mongoose.Schema({
     },
     proveedor:{
         type:mongoose.SchemaTypes.ObjectId,
+        ref: 'proveedores',
         required:true
     },
     precio:{
