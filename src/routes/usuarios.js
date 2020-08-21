@@ -334,35 +334,20 @@ router.get('/infoUsuario/:idUsuario',AutenticationToken,(req, res) => {
 /* Servicio: Obtener Rol y Privilegios de un usuario */
 router.get('/obtenerRolPrivilegios/:idRol',AutenticationToken, async (req, res) => {
     let result = Result.createResult();
-    let rol;
-    let privilegioId = [];
-    Rol.findById({_id: req.params.idRol}, (err, response) => {
-        if (!err) {
-            rol = {nombre: response.nombre, descripcion: response.descripcion}
-            response.privilegios.forEach((elemento) => {
-                privilegioId.push(elemento._id)
-            })
-            Privilegio.find({_id: {$in: privilegioId}}, (err, response) => {
-                if (!err) {
-                    result.Error = false
-                    result.Response = 'Info y privilegios de un rol'
-                    result.Items = { rol: rol, privilegios: response }
-                    res.send(result)
-                } else {
-                    result.Error = true
-                    result.Response = 'Error: privilegios no encontrados'
-                    result.Success = false
-                    res.send(result)
-                }
-                
-            })
-        } else {
-            result.Error = true
-            result.Response = 'Error, rol no encontrado'
-            result.Success = false
-            res.send(result)
-        }
-    })
+    Rol.findById({ _id: req.params.idRol }, { nombre: true })
+        .populate('privilegios')
+      .then((response) => {
+        result.Error = false;
+        result.Response = "Privilegios del rol";
+        result.Items = response;
+        res.send(result);
+      })
+      .catch((err) => {
+        result.Error = err;
+        result.Response = "Ocurrio un error";
+        res.send(result);
+      });
+    
 })
 
 // Obtener rol de un usuario
