@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const privilegio = require('../models/privilegio');
 const Result = require('../helpers/result');
-const rol = require('../models/rol');
+const Rol = require('../models/rol');
 const autenticar = require('../middlewares/autenticationJWT')
 const decodeJWT = require('../configs/decodedJWT')
-const AutenticationToken = require('../middlewares/autenticationJWT')
+const AutenticationToken = require('../middlewares/autenticationJWT');
 
 // Registrar un privilegio
 
@@ -69,12 +69,12 @@ router.post('/obtenerPrivilegiosNotInRol',AutenticationToken,function(req,res){
    
 });
 
-router.get('/privilegiosUsuario',AutenticationToken, autenticar, (req, res) => {
+/* 5f3ec44ea0dd5148fedd3661 */
+/* router.get('/privilegiosUsuario',AutenticationToken, autenticar, (req, res) => {
     let result = Result.createResult();
 
     const decodedToken = decodeJWT(req.headers["access-token"]);
     let privilegios;
-    /* 5f3ec44ea0dd5148fedd3661 */
     if (decodedToken.rol === "5f3f14f1963f5800176ca4d4") {
       privilegios = {
         users: true,
@@ -123,5 +123,29 @@ router.get('/privilegiosUsuario',AutenticationToken, autenticar, (req, res) => {
     result.Items = privilegios;
     res.send(result);
 })
+ */
+router.get("/privilegiosUsuario", AutenticationToken, (req, res) => {
+  let result = Result.createResult();
+
+  const decodedToken = decodeJWT(req.headers["access-token"]);
+  let permisos = {};
+
+  Rol.findById({ _id: decodedToken.rol }, { nombre: true })
+    .populate("privilegios")
+    .then((response) => {
+      response.privilegios.forEach((element) => {
+        permisos[`${element.nombre}`] = true;
+      });
+      result.Error = false;
+      result.Response = "Privilegios del rol";
+      result.Items = permisos;
+      res.send(result);
+    })
+    .catch((err) => {
+      result.Error = err;
+      result.Response = "Ocurrio un error";
+      res.send(result);
+    });
+});
 
 module.exports = router;
