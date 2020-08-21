@@ -9,10 +9,13 @@ const ProductoVariado = require('../models/productoVariado');
 const AutenticationToken = require('../middlewares/autenticationJWT')
 const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
+const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
+const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
+const AutenticacionLv3 = require("../middlewares/autenticacionLvl3");
 
 // registrar factura cliente
 
-router.post('/registroFacturaCliente',AutenticationToken,function(req,res){
+router.post('/registroFacturaCliente',AutenticacionLv2 ,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     let nuevaFactura = new facturaCliente({
@@ -156,7 +159,7 @@ router.get('/obtenerFacturasClientes',AutenticationToken,function(req,res){
 
 // Editar Factura Clientes
 
-router.put('/:idFactura/editarFacturaCliente',AutenticationToken,function(req,res){
+router.put('/:idFactura/editarFacturaCliente',AutenticacionLv1 ,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     facturaCliente.updateOne(

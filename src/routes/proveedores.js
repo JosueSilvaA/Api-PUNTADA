@@ -5,9 +5,12 @@ const proveedor = require('../models/proveedor');
 const Result = require('../helpers/result');
 const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
+const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
+
+
 // Registro Proveedor
 
-router.post('/registroProveedor',AutenticationToken,function(req,res){
+router.post('/registroProveedor',AutenticacionLv2,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     let nuevoProveedor = new proveedor({
@@ -89,7 +92,7 @@ router.get('/:idProveedor/obtenerProveedor',AutenticationToken,function(req,res)
 
 // Editar Proveedor
 
-router.put('/:idProveedor/editarProveedor',AutenticationToken,function(req,res){
+router.put('/:idProveedor/editarProveedor',AutenticacionLv2,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     proveedor.updateOne(

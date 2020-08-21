@@ -3,13 +3,13 @@ const router = express.Router();
 const privilegio = require('../models/privilegio');
 const Result = require('../helpers/result');
 const Rol = require('../models/rol');
-const autenticar = require('../middlewares/autenticationJWT')
 const decodeJWT = require('../configs/decodedJWT')
 const AutenticationToken = require('../middlewares/autenticationJWT');
+const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
 
 // Registrar un privilegio
 
-router.post('/registroPrivilegio',AutenticationToken,function(req,res){
+router.post('/registroPrivilegio',AutenticacionLv1 ,function(req,res){
     let nuevoPrivilegio = new privilegio({
         nombre:req.body.nombre,
         descripcion:req.body.descripcion

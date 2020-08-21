@@ -11,11 +11,11 @@ const cloudinary = require('../configs/Credenciales');
 const fs = require("fs-extra");
 const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
-
+const AutenticacionLv1 = require('../middlewares/autenticacionLvl1');
 
 // Registrar usuario
 
-router.post('/registroUsuario',AutenticationToken, async function(req, res) {
+router.post('/registroUsuario', AutenticacionLv1, async function(req, res) {
     let token = decodeJWT(req.headers['access-token']);
     let u = new Usuario({
         nombres: req.body.nombres,
@@ -185,7 +185,7 @@ router.get('/:idUsuario/obtenerUsuario',AutenticationToken,function(req,res){
 
 // Cambiar estado del Usuario
 
-router.put('/:idUsuario/cambiarEstado',AutenticationToken,function(req, res) {
+router.put('/:idUsuario/cambiarEstado',AutenticacionLv1,function(req, res) {
     let token = decodeJWT(req.headers['access-token']);
     let result = Result.createResult()
     Usuario.updateOne({
@@ -224,7 +224,7 @@ router.put('/:idUsuario/cambiarEstado',AutenticationToken,function(req, res) {
 
 // Cambiar rol de un usuario
 
-router.put('/:idUsuario/cambiarRol',AutenticationToken, function(req, res) {
+router.put('/:idUsuario/cambiarRol',AutenticacionLv1, function(req, res) {
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     Usuario.updateOne({

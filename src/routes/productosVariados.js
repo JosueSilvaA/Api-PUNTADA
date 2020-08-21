@@ -7,10 +7,15 @@ const AutenticationToken = require('../middlewares/autenticationJWT')
 const cloudinary = require("../configs/Credenciales");
 const fs = require("fs-extra");
 const estructuraBitacora = require('../helpers/esquemaBitacora');
-const decodeJWT = require('../configs/decodedJWT');
+const decodeJWT = require('../configs/decodedJWT')
+const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
+const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
+const AutenticacionLv3 = require("../middlewares/autenticacionLvl3");
+
+;
 // registrar un producto variado
 
-router.post('/registroProducto',AutenticationToken,function(req,res){
+router.post('/registroProducto',AutenticacionLv2,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     let nuevoProducto = new productoVariado({
@@ -65,7 +70,7 @@ router.get('/obtenerProductosVariados',AutenticationToken,function(req,res){
 
 // Editar producto variados
 
-router.put('/:idProducto/editarProductoVariado',AutenticationToken,function(req,res){
+router.put('/:idProducto/editarProductoVariado',AutenticacionLv1 ,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     productoVariado.updateOne(
@@ -107,7 +112,7 @@ router.put('/:idProducto/editarProductoVariado',AutenticationToken,function(req,
 
 // Editar Imagen del producto
 
-router.put('/:idProducto/editarImagen',AutenticationToken,function(req,res){
+router.put('/:idProducto/editarImagen',AutenticacionLv2 ,function(req,res){
     let result = Result.createResult();
     productoVariado.updateOne(
         {_id:req.params.idProducto},
@@ -139,7 +144,7 @@ router.put('/:idProducto/editarImagen',AutenticationToken,function(req,res){
 
 // Eliminar producto variado
 
-router.put('/:idProducto/eliminarProductoVariado',AutenticationToken,function(req,res){
+router.put('/:idProducto/eliminarProductoVariado',AutenticacionLv1 ,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     productoVariado.updateOne(
@@ -173,7 +178,7 @@ router.put('/:idProducto/eliminarProductoVariado',AutenticationToken,function(re
 });
 
 /* Cambiar imagen producto variado */
-router.post("/cambiarImagenVariado/:idProducto", AutenticationToken,
+router.post("/cambiarImagenVariado/:idProducto", AutenticacionLv2 ,
   async (req, res) => {
     let token = decodeJWT(req.headers['access-token']);
     let file = req.file;

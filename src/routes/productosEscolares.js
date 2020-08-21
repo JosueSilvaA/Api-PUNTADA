@@ -8,9 +8,13 @@ const cloudinary = require("../configs/Credenciales");
 const fs = require("fs-extra");
 const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
+const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
+const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
+const AutenticacionLv3 = require("../middlewares/autenticacionLvl3");
+
 // registrar un producto escolares
 
-router.post('/registroProducto',AutenticationToken,function(req,res){
+router.post('/registroProducto',AutenticacionLv2 ,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     let nuevoProducto = new productoEscolar({
@@ -67,7 +71,7 @@ router.get('/obtenerProductosEscolares',AutenticationToken,function(req,res){
 
 // Editar producto escolar
 
-router.put('/:idProducto/editarProductoEscolar',AutenticationToken,function(req,res){
+router.put('/:idProducto/editarProductoEscolar',AutenticacionLv1 ,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     productoEscolar.updateOne(
@@ -111,7 +115,7 @@ router.put('/:idProducto/editarProductoEscolar',AutenticationToken,function(req,
 
 // Eliminar producto escolar
 
-router.put('/:idProducto/eliminarProductoEscolar',AutenticationToken,function(req,res){
+router.put('/:idProducto/eliminarProductoEscolar',AutenticacionLv1,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     productoEscolar.updateOne(
@@ -145,7 +149,7 @@ router.put('/:idProducto/eliminarProductoEscolar',AutenticationToken,function(re
 });
 
 /* Cambiar imagen producto escolar */
-router.post("/cambiarImagenEscolar/:idProducto",AutenticationToken,
+router.post("/cambiarImagenEscolar/:idProducto",AutenticacionLv2,
   async (req, res) => {
     let token = decodeJWT(req.headers['access-token']);
     let file = req.file;

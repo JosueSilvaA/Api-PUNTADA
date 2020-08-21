@@ -5,11 +5,11 @@ const privilegio = require('../models/privilegio');
 const Result = require('../helpers/result')
 const mongoose = require('mongoose')
 const AutenticationToken = require('../middlewares/autenticationJWT');
-const { populate } = require('../models/rol');
+const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
 
 // Registrar un rol
 
-router.post('/registroRol',AutenticationToken, function(req, res) {
+router.post('/registroRol',AutenticacionLv1, function(req, res) {
     let newRol = new rol({
         nombre: req.body.nombre,
         descripcion:req.body.descripcion
@@ -57,7 +57,7 @@ router.get('/obtenerRoles',AutenticationToken, function(req, res) {
 
 /* Agregar un Privilegio a un Rol */
 
-router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio',AutenticationToken, function(req, res) {
+router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio',AutenticacionLv1, function(req, res) {
     let result = Result.createResult()
     rol
         .updateOne({
@@ -99,6 +99,23 @@ router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio',AutenticationT
 router.post('/:idRol/obtenerPrivilegios', AutenticationToken,function(req, res) {
     let result = Result.createResult()
     rol
+      .find({ _id: req.params.idRol })
+      .populate("privilegios")
+      .then((response) => {
+        result.Success = true;
+        result.Error = false;
+        result.Response = "Todos los privilegios de este rol";
+        result.Items = response[0].privilegios;
+        res.send(result);
+      })
+      .catch((err) => {
+        result.Error = err;
+        result.Response = "Ocurrio un error";
+        result.Success = false;
+        res.send(result);
+    });
+/* 
+    rol
         .find({
             _id: mongoose.Types.ObjectId(req.params.idRol)
         }, {
@@ -127,12 +144,12 @@ router.post('/:idRol/obtenerPrivilegios', AutenticationToken,function(req, res) 
             result.Response = 'Ocurrio un error'
             result.Success = false
             res.send(result);
-        })
+        }) */
 })
 
 // Eliminar privilegio de un rol
 
-router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio',AutenticationToken, function(req, res) {
+router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio',AutenticacionLv1, function(req, res) {
     let result = Result.createResult();
     rol.update({
             _id: mongoose.Types.ObjectId(req.params.idRol)
@@ -167,7 +184,7 @@ router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio',Autenticati
 /* Registrar un privilegio */
 router.post(
   "/registroPrivilegio",
-  AutenticationToken,
+  AutenticacionLv1,
    (req, res) => {
        let result = Result.createResult();
       let newPrivilegio = new privilegio({

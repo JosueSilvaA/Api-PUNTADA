@@ -8,10 +8,14 @@ const cloudinary = require("../configs/Credenciales");
 const fs = require("fs-extra");
 const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
+const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
+const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
+const AutenticacionLv3 = require("../middlewares/autenticacionLvl3");
+
 
 // registrar un producto textil
 
-router.post('/registroProducto',AutenticationToken,function(req,res){
+router.post('/registroProducto',AutenticacionLv2 ,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     let nuevoProducto = new productoTextil({
@@ -68,7 +72,7 @@ router.get('/obtenerProductosTextiles',AutenticationToken,function(req,res){
 
 // Editar producto textil
 
-router.put('/:idProducto/editarProductoTextil',AutenticationToken,function(req,res){
+router.put('/:idProducto/editarProductoTextil',AutenticacionLv1,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     productoTextil.updateOne(
@@ -111,7 +115,7 @@ router.put('/:idProducto/editarProductoTextil',AutenticationToken,function(req,r
 
 // Editar Imagen del producto
 
-router.put('/:idProducto/editarImagen',AutenticationToken,function(req,res){
+router.put('/:idProducto/editarImagen',AutenticacionLv2,function(req,res){
     let result = Result.createResult();
     productoVariado.updateOne(
         {_id:req.params.idProducto},
@@ -143,7 +147,7 @@ router.put('/:idProducto/editarImagen',AutenticationToken,function(req,res){
 
 // Eliminar producto textil
 
-router.put('/:idProducto/eliminarProductoTextil',AutenticationToken,function(req,res){
+router.put('/:idProducto/eliminarProductoTextil',AutenticacionLv1 ,function(req,res){
     let result = Result.createResult();
     let token = decodeJWT(req.headers['access-token']);
     productoTextil.updateOne(
@@ -177,7 +181,7 @@ router.put('/:idProducto/eliminarProductoTextil',AutenticationToken,function(req
 });
 
 /* Cambiar imagen producto textil */
-router.post("/cambiarImagenTextil/:idProducto", AutenticationToken,
+router.post("/cambiarImagenTextil/:idProducto", AutenticacionLv2,
   async (req, res) => {
     let token = decodeJWT(req.headers['access-token']);
     let file = req.file;
