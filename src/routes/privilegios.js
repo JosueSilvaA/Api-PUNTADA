@@ -74,7 +74,8 @@ router.get('/privilegiosUsuario',AutenticationToken, autenticar, (req, res) => {
 
     const decodedToken = decodeJWT(req.headers["access-token"]);
     let privilegios;
-    if (decodedToken.rol === "5f3ec44ea0dd5148fedd3661") {
+    /* 5f3ec44ea0dd5148fedd3661 */
+    if (decodedToken.rol === "5f3f14f1963f5800176ca4d4") {
       privilegios = {
         users: true,
         editProduct: true,
@@ -95,7 +96,7 @@ router.get('/privilegiosUsuario',AutenticationToken, autenticar, (req, res) => {
         providers: true,
         mostSelledProducts: true,
       };
-    } else if (decodedToken.rol === "5f0cd30b40fbd42fb0278891") {
+    } else if (decodedToken.rol === "5f3f1537963f5800176ca4d5") {
       privilegios = {
         users: false,
         editProduct: true,
