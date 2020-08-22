@@ -47,10 +47,11 @@ router.get('/obtenerProductos',AutenticationToken, async (req, res) => {
     let result = Result.createResult();
 
     let productos = [];
-    const escolar = await productoEscolar.find({})
-    const textil = await productoTextil.find({})
-    const variado = await productoVariado.find({})
+    const escolar = await productoEscolar.find({estado:true})
+    const textil = await productoTextil.find({estado:true})
+    const variado = await productoVariado.find({estado:true})
     escolar.forEach((producto) =>{
+        
         productos.push(producto)
     })
     textil.forEach((producto) => {
