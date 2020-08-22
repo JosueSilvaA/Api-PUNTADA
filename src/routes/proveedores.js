@@ -6,7 +6,7 @@ const Result = require('../helpers/result');
 const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
 const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
-
+const AutenticacionLv1 = require('../middlewares/autenticacionLvl1');
 
 // Registro Proveedor
 
