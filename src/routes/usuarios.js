@@ -492,13 +492,13 @@ router.put("/cambiarContrasena/:idUser", AutenticationToken, async (req, res) =>
               result.Error = false;
               result.Response = "Se cambio la contraseña del usuario";
               res.send(result);
-              /* estructuraBitacora(
+              estructuraBitacora(
                   token.id,
                   req.params.idUsuario,
                   "Se modifico la contraseña del usuario",
                   "Gestion Usuarios",
                   "USUARIOS"
-                ); */
+                );
             } else if (response.nModified === 0 && response.n === 1) {
               result.Error = false;
               result.Response = "No se realizo ningun cambio";
