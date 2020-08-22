@@ -38,7 +38,7 @@ const usuario = new mongoose.Schema({
         type:mongoose.SchemaTypes.ObjectId,
         ref: 'roles',
         required:true,
-        default: '5f0cd30b40fbd42fb0278891'
+        default: '5f3f1563963f5800176ca4d7'
     },
     identidad:{
         type:String,

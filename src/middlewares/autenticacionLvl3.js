@@ -16,8 +16,9 @@ router.use((req, res, next) => {
         res.send(result);
       } else {
         if (
-          decoded.rol === "5f3f1537963f5800176ca4d5" &&
-          decode.rol === "5f3f1575963f5800176ca4d8"
+          decoded.rol === "5f3f14f1963f5800176ca4d4" ||
+          decoded.rol === "5f3f1575963f5800176ca4d8" ||
+          decoded.rol === "5f3f1537963f5800176ca4d5" 
         ) {
           req.decoded = decoded;
           next();

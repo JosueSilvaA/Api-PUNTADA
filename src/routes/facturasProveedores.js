@@ -153,6 +153,23 @@ router.get('/obtenerFacturasProveedores',AutenticationToken,function(req,res){
     });
 })
 
+router.get('/obtenerFacturaProveedor/:idFactura',AutenticationToken,function(req,res){
+    let result = Result.createResult();
+    facturaProveedor.find({_id:req.params.idFactura})
+    .populate('proveedor', 'nombre')
+    .then(response=>{
+        result.Error = false
+        result.Response = 'Factura de Proveedor'
+        result.Items = response
+        res.send(result)
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    });
+})
+
 // Editar Factura Proveedor
 
 router.put('/:idFactura/editarFacturaProveedor',AutenticacionLv1 ,function(req,res){

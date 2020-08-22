@@ -157,6 +157,26 @@ router.get('/obtenerFacturasClientes',AutenticationToken,function(req,res){
     });
 })
 
+// obtener factura de cliente 
+router.get('/obtenerFacturaCliente/:idFactura',AutenticationToken,function(req,res){
+    let result = Result.createResult();
+    facturaCliente.find({_id:req.params.idFactura})
+    .populate('nombreEmpleado', 'nombres apellidos')
+    .then(response=>{
+        console.log(response);
+        result.Error = false
+        result.Response = 'Factura de un cliente'
+        result.Items = response
+        res.send(result)
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    });
+})
+
+
 // Editar Factura Clientes
 
 router.put('/:idFactura/editarFacturaCliente',AutenticacionLv1 ,function(req,res){
