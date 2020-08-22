@@ -133,5 +133,44 @@ router.put('/:idProveedor/editarProveedor',AutenticacionLv2,function(req,res){
     })
 });
 
+// cambiar el estado de un proveedor
+
+router.put('/:idProveedor/eliminarProveedor',AutenticacionLv1,function(req,res){
+    let result = Result.createResult();
+    let token = decodeJWT(req.headers['access-token']);
+    proveedor.updateOne(
+        {_id:req.params.idProveedor},
+        {
+            estado:false
+        }
+    ).then(response =>{
+        if (response.nModified === 1 && response.n === 1) {
+            result.Error = false
+            result.Response = 'Se elimino el proveedor'
+            res.send(result)
+            estructuraBitacora(
+                token.id,
+                req.params.idProveedor,
+                'Se elimino un proveedor',
+                'Gestion Proveedores',
+                'PROVEEDORES'
+              )
+        } else if (response.nModified === 0 && response.n === 1) {
+            result.Error = false
+            result.Response = 'No se realizo ningun cambio'
+            res.send(result)
+        } else {
+            result.Error = 'Id Invalido'
+            result.Success = false
+            res.send(result)
+        }
+    }).catch(err=>{
+        result.Error = err
+        result.Response = 'Ocurrio un error'
+        result.Success = false
+        res.send(result)
+    })
+});
+
 
 module.exports = router;
