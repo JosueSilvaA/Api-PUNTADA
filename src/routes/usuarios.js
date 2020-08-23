@@ -260,7 +260,7 @@ router.put("/:idUsuario/cambiarRol", AutenticacionLv1, function (req, res) {
           "Gestion Usuarios",
           "USUARIOS"
         );
-        sendAdminNotification('La Puntada', `El administrador ${req.decode.user} cambió el rol del usuario ${req.params.idUsuario}.`)
+        sendAdminNotification('La Puntada', `El administrador ${req.decoded.user} cambió el rol del usuario ${req.params.idUsuario}.`)
       } else if (response.nModified === 0 && response.n === 1) {
         result.Error = false;
         result.Response = "No se realizo ningun cambio";
