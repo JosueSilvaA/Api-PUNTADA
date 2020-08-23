@@ -6,6 +6,7 @@ const Result = require('../helpers/result')
 const mongoose = require('mongoose')
 const AutenticationToken = require('../middlewares/autenticationJWT');
 const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
+const { sendAdminNotification } = require('../helpers/SendPushNotification');
 
 // Registrar un rol
 
@@ -75,6 +76,7 @@ router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio',AutenticacionL
                 result.Error = false;
                 result.Response = 'Privilegio registrado con exito';
                 res.send(result);
+                sendAdminNotification('La Puntad', `${req.decoded.user} agregó un privilegio al rol ${req.params.idRol}!.`)
             }else if(response.nModified === 0 && response.n === 1){
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -166,6 +168,7 @@ router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio',Autenticaci
                 result.Response = 'Privilegio eliminado con exito'
                 result.Items = response[0]
                 res.send(result)
+                sendAdminNotification('La Puntada', `${req.decoded.user} eliminó un privilegio del rol ${req.params.idRol}`)
             }else{
                 result.Error = 'Id Invalido'
                 result.Success = false

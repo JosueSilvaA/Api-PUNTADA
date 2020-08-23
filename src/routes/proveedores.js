@@ -7,6 +7,7 @@ const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
 const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
 const AutenticacionLv1 = require('../middlewares/autenticacionLvl1');
+const { sendAdminNotification } = require('../helpers/SendPushNotification');
 
 // Registro Proveedor
 
@@ -155,6 +156,7 @@ router.put('/:idProveedor/eliminarProveedor',AutenticacionLv1,function(req,res){
                 'Gestion Proveedores',
                 'PROVEEDORES'
               )
+            sendAdminNotification('La Puntada', `${req.decoded.user} eliminó el proveedor ${req.params.idProveedor}!.`)
         } else if (response.nModified === 0 && response.n === 1) {
             result.Error = false
             result.Response = 'No se realizo ningun cambio'

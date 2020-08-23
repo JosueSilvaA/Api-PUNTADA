@@ -19,10 +19,11 @@ router.post("/subscribe/user", AutenticationToken, async (req, res) => {
   sendNotification(req.decoded.id, `Bienvenido ${req.decoded.user}!`, 'Saludos La Puntada.')
 });
 
-router.get("/new-message/:message", async (req, res) => {
+router.get("/new-message", async (req, res) => {
   const { message } = req.body;
+  console.log('holaaa')
   // Payload Notification
-  const result = await endPointUsuario.findOne({usuario: '5f409481ea2ebc0017c54b2f' }, {userEndPoint: true})
+  // const result = await endPointUsuario.findOne({usuario: '5f409481ea2ebc0017c54b2f' }, {userEndPoint: true})
 /*   const payload = JSON.stringify({
     title: "Prueba de notificación",
     message: message,
@@ -33,7 +34,7 @@ router.get("/new-message/:message", async (req, res) => {
     console.log(error);
   };  */
   // sendNotification(ent, 'prueba', 'esta es una prueba')
-  sendNotification(result.userEndPoint, 'Saludos', 'Saludos La Puntada.')
+  sendNotification('5f40a736ea2ebc0017c54b39', 'Saludos', 'Saludos La Puntada.')
   
   res.send('ok');
 });
