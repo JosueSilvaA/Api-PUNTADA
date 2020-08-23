@@ -19,7 +19,7 @@ router.post("/subscribe/user", AutenticationToken, async (req, res) => {
   sendNotification(req.decoded.id, `Bienvenido ${req.decoded.user}!`, 'Saludos La Puntada.')
 });
 
-router.get("/new-message", async (req, res) => {
+router.get("/new-message/:idUser", async (req, res) => {
   const { message } = req.body;
   console.log('holaaa')
   // Payload Notification
@@ -34,7 +34,7 @@ router.get("/new-message", async (req, res) => {
     console.log(error);
   };  */
   // sendNotification(ent, 'prueba', 'esta es una prueba')
-  sendNotification('5f40a736ea2ebc0017c54b39', 'Saludos', 'Saludos La Puntada.')
+  sendNotification(req.params.idUser, 'Saludos', 'Saludos La Puntada.')
   
   res.send('ok');
 });
