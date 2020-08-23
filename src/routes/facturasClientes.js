@@ -128,6 +128,10 @@ router.post('/registroFacturaCliente',AutenticacionLv2 ,function(req,res){
             'Gestion Facturas de Clientes',
             'FACTURAS CLIENTES'
         )
+        sendAdminNotification(
+          "La Puntada",
+          `El usuario ${req.decoded.user} registró una nueva factura cliente.`
+        );
     }).catch(err =>{
         result.Error = err
         result.Response = 'Ocurrio un error'

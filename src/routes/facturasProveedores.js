@@ -125,6 +125,10 @@ router.post('/registroFacturaProveedor',AutenticacionLv2 ,function(req,res){
             'Gestion Facturas de Proveedores',
             'FACTURAS PROVEEDORES'
         )
+        sendAdminNotification(
+          "La Puntada",
+          `El usuario ${req.decoded.user} registró una nueva factura de proveedor.`
+        );
     }).catch(err =>{
         result.Error = err
         result.Response = 'Ocurrio un error'

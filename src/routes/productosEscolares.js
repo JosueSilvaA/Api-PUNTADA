@@ -11,6 +11,7 @@ const decodeJWT = require('../configs/decodedJWT');
 const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
 const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
 const AutenticacionLv3 = require("../middlewares/autenticacionLvl3");
+const { sendAdminNotification } = require('../helpers/SendPushNotification');
 
 // registrar un producto escolares
 
@@ -38,6 +39,7 @@ router.post('/registroProducto',AutenticacionLv2 ,function(req,res){
           'Gestion Productos Escolares',
           'PRODUCTOS ESCOLARES'
         )
+        sendAdminNotification('La Puntada', `El usuario ${req.decoded.user} ha registrado un nuevo producto!.`)
     }).catch(err=>{
         result.Error = err
         result.Response = 'Ocurrio un error'
@@ -96,6 +98,7 @@ router.put('/:idProducto/editarProductoEscolar',AutenticacionLv1 ,function(req,r
                   'Gestion Productos Escolares',
                   'PRODUCTOS ESCOLARES'
                 )
+                sendAdminNotification('La Puntada', `El usuario ${req.decoded.user} modificó el producto ${req.body.nombre}!`)
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -135,6 +138,11 @@ router.put('/:idProducto/eliminarProductoEscolar',AutenticacionLv1,function(req,
                   'Gestion Productos Escolares',
                   'PRODUCTOS ESCOLARES'
                 )
+                sendAdminNotification(
+                  "La Puntada",
+                  `El usuario ${req.decoded.user} eliminó el producto escolar ${req.params.idProducto}.`
+                );
+
             }else{
                 result.Error = 'Id Invalido'
                 result.Success = false
@@ -187,6 +195,10 @@ router.post("/cambiarImagenEscolar/:idProducto",AutenticacionLv2,
               'Gestion Productos Escolares',
               'PRODUCTOS ESCOLARES'
             )
+                sendAdminNotification(
+                  "La Puntada",
+                  `El usuario ${req.decoded.user} cambió el producto escolar ${req.params.idProducto}.`
+                );
           } else if (response.nModified === 0 && response.n === 1) {
             result.Error = false;
             result.Response = "No se realizo ningun cambio";

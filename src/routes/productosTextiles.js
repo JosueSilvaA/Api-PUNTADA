@@ -11,6 +11,7 @@ const decodeJWT = require('../configs/decodedJWT');
 const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
 const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
 const AutenticacionLv3 = require("../middlewares/autenticacionLvl3");
+const { sendAdminNotification } = require('../helpers/SendPushNotification');
 
 
 // registrar un producto textil
@@ -96,6 +97,10 @@ router.put('/:idProducto/editarProductoTextil',AutenticacionLv1,function(req,res
                     'Gestion Productos Textiles',
                     'PRODUCTOS TEXTILES'
                   )
+                sendAdminNotification(
+                  "La Puntada",
+                  `El usuario ${req.decoded.user} editó el producto textil ${req.params.idProducto}.`
+                );
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -127,6 +132,17 @@ router.put('/:idProducto/editarImagen',AutenticacionLv2,function(req,res){
                 result.Error = false
                 result.Response = 'Se modifico la imagen del producto'
                 res.send(result)
+                estructuraBitacora(
+                  req.decoded.id,
+                  req.params.idProducto,
+                  "Se edito la imagen de un producto textil",
+                  "Gestion Productos Textiles",
+                  "PRODUCTOS TEXTILES"
+                );
+                sendAdminNotification(
+                  "La Puntada",
+                  `El usuario ${req.decoded.user}  cambió la imagen del producto ${req.params.idProducto}.`
+                );
             } else if (response.nModified === 0 && response.n === 1) {
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -167,6 +183,7 @@ router.put('/:idProducto/eliminarProductoTextil',AutenticacionLv1 ,function(req,
                     'Gestion Productos Textiles',
                     'PRODUCTOS TEXTILES'
                   )
+                  sendAdminNotification('La Puntada', `El usuario ${req.decoded.user} eliminó el producto textil ${req.params.idProducto}`)
             }else{
                 result.Error = 'Id Invalido'
                 result.Success = false
@@ -219,6 +236,10 @@ router.post("/cambiarImagenTextil/:idProducto", AutenticacionLv2,
                 'Gestion Productos Textiles',
                 'PRODUCTOS TEXTILES'
               )
+                  sendAdminNotification(
+                    "La Puntada",
+                    `El usuario ${req.decoded.user} cambió la imagen del producto textil ${req.params.idProducto}`
+                  );
           } else if (response.nModified === 0 && response.n === 1) {
             result.Error = false;
             result.Response = "No se realizo ningun cambio";

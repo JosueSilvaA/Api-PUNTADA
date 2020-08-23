@@ -1,186 +1,230 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const productoVariado = require('../models/productoVariado');
-const Result = require('../helpers/result');
-const mongoose = require('mongoose');
-const AutenticationToken = require('../middlewares/autenticationJWT')
+const productoVariado = require("../models/productoVariado");
+const Result = require("../helpers/result");
+const mongoose = require("mongoose");
+const AutenticationToken = require("../middlewares/autenticationJWT");
 const cloudinary = require("../configs/Credenciales");
 const fs = require("fs-extra");
-const estructuraBitacora = require('../helpers/esquemaBitacora');
-const decodeJWT = require('../configs/decodedJWT')
+const estructuraBitacora = require("../helpers/esquemaBitacora");
+const decodeJWT = require("../configs/decodedJWT");
 const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
 const AutenticacionLv2 = require("../middlewares/autenticacionLvl2");
 const AutenticacionLv3 = require("../middlewares/autenticacionLvl3");
 
-;
 // registrar un producto variado
 
-router.post('/registroProducto',AutenticacionLv2,function(req,res){
-    let result = Result.createResult();
-    let token = decodeJWT(req.headers['access-token']);
-    let nuevoProducto = new productoVariado({
-        nombre:req.body.nombre,
-        proveedor:mongoose.Types.ObjectId(req.body.proveedor),
-        precio:req.body.precio,
-        tipoVariado:req.body.tipoVariado,
-        descripcion:req.body.descripcion
-    });
-    nuevoProducto.save().then(response=>{
-        result.Error = false
-        result.Response = 'Producto Variado registrado con exito'
-        result.Items = response
-        res.send(result)
-        estructuraBitacora(
-            token.id,
-            response._id,
-            'Se registro un producto variado',
-            'Gestion Productos Variados',
-            'PRODUCTOS VARIADOS'
-          )
-    }).catch(err=>{
-        result.Error = err
-        result.Response = 'Ocurrio un error'
-        result.Success = false
-        res.send(result)
+router.post("/registroProducto", AutenticacionLv2, function (req, res) {
+  let result = Result.createResult();
+  let token = decodeJWT(req.headers["access-token"]);
+  let nuevoProducto = new productoVariado({
+    nombre: req.body.nombre,
+    proveedor: mongoose.Types.ObjectId(req.body.proveedor),
+    precio: req.body.precio,
+    tipoVariado: req.body.tipoVariado,
+    descripcion: req.body.descripcion,
+  });
+  nuevoProducto
+    .save()
+    .then((response) => {
+      result.Error = false;
+      result.Response = "Producto Variado registrado con exito";
+      result.Items = response;
+      res.send(result);
+      estructuraBitacora(
+        token.id,
+        response._id,
+        "Se registro un producto variado",
+        "Gestion Productos Variados",
+        "PRODUCTOS VARIADOS"
+      );
+      sendAdminNotification(
+        "La Puntada",
+        `El usuario ${req.decoded.user} registró un nuevo producto variado.`
+      );
     })
+    .catch((err) => {
+      result.Error = err;
+      result.Response = "Ocurrio un error";
+      result.Success = false;
+      res.send(result);
+    });
 });
 
 // Obtener productos variados
 
-router.get('/obtenerProductosVariados',AutenticationToken,function(req,res){
-    let result = Result.createResult();
-    productoVariado.find({}).then(response=>{
-        let productosActivos = [];
-        for(let i = 0; i < response.length;i++){
-            if(response[i].estado == true){
-                 productosActivos.push(response[i]);
-            }
+router.get("/obtenerProductosVariados", AutenticationToken, function (
+  req,
+  res
+) {
+  let result = Result.createResult();
+  productoVariado
+    .find({})
+    .then((response) => {
+      let productosActivos = [];
+      for (let i = 0; i < response.length; i++) {
+        if (response[i].estado == true) {
+          productosActivos.push(response[i]);
         }
-        result.Error = false
-        result.Response = 'Todos los productos variados'
-        result.Items = productosActivos
-        res.send(result)
-    }).catch(err=>{
-        result.Error = err
-        result.Response = 'Ocurrio un error'
-        result.Success = false
-        res.send(result)
+      }
+      result.Error = false;
+      result.Response = "Todos los productos variados";
+      result.Items = productosActivos;
+      res.send(result);
+    })
+    .catch((err) => {
+      result.Error = err;
+      result.Response = "Ocurrio un error";
+      result.Success = false;
+      res.send(result);
     });
 });
 
 // Editar producto variados
 
-router.put('/:idProducto/editarProductoVariado',AutenticacionLv1 ,function(req,res){
-    let result = Result.createResult();
-    let token = decodeJWT(req.headers['access-token']);
-    productoVariado.updateOne(
-        {_id:req.params.idProducto},
-        {
-            nombre:req.body.nombre,
-            precio:req.body.precio,
-            tipoVariado:req.body.tipoVariado,
-            descripcion:req.body.descripcion
-        }
-        ).then(response => {
-            if (response.nModified === 1 && response.n === 1) {
-                result.Error = false
-                result.Response = 'Se modifico la informacion del producto'
-                res.send(result)
-                estructuraBitacora(
-                    token.id,
-                    req.params.idProducto,
-                    'Se edito un producto variado',
-                    'Gestion Productos Variados',
-                    'PRODUCTOS VARIADOS'
-                  )
-            } else if (response.nModified === 0 && response.n === 1) {
-                result.Error = false
-                result.Response = 'No se realizo ningun cambio'
-                res.send(result)
-            } else {
-                result.Error = 'Id Invalido'
-                result.Success = false
-                res.send(result)
-            }
-        })
-        .catch(err => {
-            result.Error = err
-            result.Response = 'Ocurrio un error'
-            res.send(result)
-        });
+router.put("/:idProducto/editarProductoVariado", AutenticacionLv1, function (
+  req,
+  res
+) {
+  let result = Result.createResult();
+  let token = decodeJWT(req.headers["access-token"]);
+  productoVariado
+    .updateOne(
+      { _id: req.params.idProducto },
+      {
+        nombre: req.body.nombre,
+        precio: req.body.precio,
+        tipoVariado: req.body.tipoVariado,
+        descripcion: req.body.descripcion,
+      }
+    )
+    .then((response) => {
+      if (response.nModified === 1 && response.n === 1) {
+        result.Error = false;
+        result.Response = "Se modifico la informacion del producto";
+        res.send(result);
+        estructuraBitacora(
+          token.id,
+          req.params.idProducto,
+          "Se edito un producto variado",
+          "Gestion Productos Variados",
+          "PRODUCTOS VARIADOS"
+        );
+        sendAdminNotification(
+          "La Puntada",
+          `El usuario ${req.decoded.user} editó el producto variado ${req.params.idProducto}`
+        );
+      } else if (response.nModified === 0 && response.n === 1) {
+        result.Error = false;
+        result.Response = "No se realizo ningun cambio";
+        res.send(result);
+      } else {
+        result.Error = "Id Invalido";
+        result.Success = false;
+        res.send(result);
+      }
+    })
+    .catch((err) => {
+      result.Error = err;
+      result.Response = "Ocurrio un error";
+      res.send(result);
+    });
 });
 
 // Editar Imagen del producto
 
-router.put('/:idProducto/editarImagen',AutenticacionLv2 ,function(req,res){
-    let result = Result.createResult();
-    productoVariado.updateOne(
-        {_id:req.params.idProducto},
-        {
-            imgProducto:req.body.imgProducto
-        }
-        ).then(response => {
-            if (response.nModified === 1 && response.n === 1) {
-                result.Error = false
-                result.Response = 'Se modifico la imagen del producto'
-                res.send(result)
-            } else if (response.nModified === 0 && response.n === 1) {
-                result.Error = false
-                result.Response = 'No se realizo ningun cambio'
-                res.send(result)
-            } else {
-                result.Error = 'Id Invalido'
-                result.Success = false
-                res.send(result)
-            }
-        })
-        .catch(err => {
-            result.Error = err
-            result.Response = 'Ocurrio un error'
-            res.send(result)
-        });
+router.put("/:idProducto/editarImagen", AutenticacionLv2, function (req, res) {
+  let result = Result.createResult();
+  productoVariado
+    .updateOne(
+      { _id: req.params.idProducto },
+      {
+        imgProducto: req.body.imgProducto,
+      }
+    )
+    .then((response) => {
+      if (response.nModified === 1 && response.n === 1) {
+        result.Error = false;
+        result.Response = "Se modifico la imagen del producto";
+        res.send(result);
+        estructuraBitacora(
+          token.id,
+          req.params.idProducto,
+          "Se edito modificó la imagen del producto",
+          "Gestion Productos Variados",
+          "PRODUCTOS VARIADOS"
+        );
+        sendAdminNotification(
+          "La Puntada",
+          `El usuario ${req.decoded.user} cambió la imagen del producto ${req.params.idProducto}.`
+        );
+      } else if (response.nModified === 0 && response.n === 1) {
+        result.Error = false;
+        result.Response = "No se realizo ningun cambio";
+        res.send(result);
+      } else {
+        result.Error = "Id Invalido";
+        result.Success = false;
+        res.send(result);
+      }
+    })
+    .catch((err) => {
+      result.Error = err;
+      result.Response = "Ocurrio un error";
+      res.send(result);
+    });
 });
-
 
 // Eliminar producto variado
 
-router.put('/:idProducto/eliminarProductoVariado',AutenticacionLv1 ,function(req,res){
-    let result = Result.createResult();
-    let token = decodeJWT(req.headers['access-token']);
-    productoVariado.updateOne(
-        {_id:req.params.idProducto},
-        {
-            estado:false
-        }
-        ).then(response => {
-            if (response.nModified === 1 && response.n === 1) {
-                result.Error = false
-                result.Response = 'Se elimino el producto con exito'
-                res.send(result)
-                estructuraBitacora(
-                    token.id,
-                    req.params.idProducto,
-                    'Se elimino un producto variado',
-                    'Gestion Productos Variados',
-                    'PRODUCTOS VARIADOS'
-                  )
-            }else{
-                result.Error = 'Id Invalido'
-                result.Success = false
-                res.send(result)
-            }
-        })
-        .catch(err => {
-            result.Error = err
-            result.Response = 'Ocurrio un error'
-            res.send(result)
-        });
+router.put("/:idProducto/eliminarProductoVariado", AutenticacionLv1, function (
+  req,
+  res
+) {
+  let result = Result.createResult();
+  let token = decodeJWT(req.headers["access-token"]);
+  productoVariado
+    .updateOne(
+      { _id: req.params.idProducto },
+      {
+        estado: false,
+      }
+    )
+    .then((response) => {
+      if (response.nModified === 1 && response.n === 1) {
+        result.Error = false;
+        result.Response = "Se elimino el producto con exito";
+        res.send(result);
+        estructuraBitacora(
+          token.id,
+          req.params.idProducto,
+          "Se elimino un producto variado",
+          "Gestion Productos Variados",
+          "PRODUCTOS VARIADOS"
+        );
+        sendAdminNotification(
+          "La Puntada",
+          `El usuario ${req.decoded.user} eliminó el producto variado ${req.params.idProducto}.`
+        );
+      } else {
+        result.Error = "Id Invalido";
+        result.Success = false;
+        res.send(result);
+      }
+    })
+    .catch((err) => {
+      result.Error = err;
+      result.Response = "Ocurrio un error";
+      res.send(result);
+    });
 });
 
 /* Cambiar imagen producto variado */
-router.post("/cambiarImagenVariado/:idProducto", AutenticacionLv2 ,
+router.post(
+  "/cambiarImagenVariado/:idProducto",
+  AutenticacionLv2,
   async (req, res) => {
-    let token = decodeJWT(req.headers['access-token']);
+    let token = decodeJWT(req.headers["access-token"]);
     let file = req.file;
     let result = Result.createResult();
     let id_publica = req.params.idProducto;
@@ -210,12 +254,16 @@ router.post("/cambiarImagenVariado/:idProducto", AutenticacionLv2 ,
             result.Response = "Se cambio la imagen del producto.";
             res.send(result);
             estructuraBitacora(
-                token.id,
-                req.params.idProducto,
-                'Se modifico la imagen de un producto variado',
-                'Gestion Productos Variados',
-                'PRODUCTOS VARIADOS'
-              )
+              token.id,
+              req.params.idProducto,
+              "Se modifico la imagen de un producto variado",
+              "Gestion Productos Variados",
+              "PRODUCTOS VARIADOS"
+            );
+            sendAdminNotification(
+              "La Puntada",
+              `El usuario ${req.decoded.user} cambió la imagen del producto ${req.params.idProducto}.`
+            );
           } else if (response.nModified === 0 && response.n === 1) {
             result.Error = false;
             result.Response = "No se realizo ningun cambio";

@@ -6,6 +6,7 @@ const moment = require("moment");
 const AutenticationToken = require('../middlewares/autenticationJWT')
 const estructuraBitacora = require('../helpers/esquemaBitacora');
 const decodeJWT = require('../configs/decodedJWT');
+const { sendAdminNotification } = require("../helpers/SendPushNotification");
 
 
 router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro",AutenticationToken, (req, res) => {
@@ -50,6 +51,10 @@ router.get("/obtenerVentasEmpleado/:idEmpleado/:fechaParametro",AutenticationTok
         'Gestion de Reportes',
         'REPORTES DE VENTAS POR EMPLEADO'
       )
+      sendAdminNotification(
+        "La Puntada",
+        `El usuario ${req.decoded.user} generó un reporte de ventas del empleado ${response[0].nombreEmpleado}.`
+      );
     })
     .catch((err) => {
       result.Error = err;
@@ -107,6 +112,10 @@ router.get('/productoMasVendido',AutenticationToken,function(req,res){
       'Gestion de Reportes',
       'REPORTES DE PRODUCTO MAS VENDIDO'
     )
+    sendAdminNotification(
+      "La Puntada",
+      `El usuario ${req.decoded.user} generó un nuevo reporte de productos más vendidos.`
+    );
   })
   .catch(err=>{
     result.Error = err;
