@@ -58,7 +58,7 @@ router.get('/obtenerRoles',AutenticationToken, function(req, res) {
 
 /* Agregar un Privilegio a un Rol */
 
-router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio',AutenticacionLv1, function(req, res) {
+router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio', function(req, res) {
     let result = Result.createResult()
     rol
         .updateOne({
@@ -76,7 +76,7 @@ router.post('/:idRol/privilegio/:idPrivilegio/registroPrivilegio',AutenticacionL
                 result.Error = false;
                 result.Response = 'Privilegio registrado con exito';
                 res.send(result);
-                sendAdminNotification('La Puntad', `${req.decoded.user} agregó un privilegio al rol ${req.params.idRol}!.`)
+                sendAdminNotification('La Puntada', `${req.decoded.user} agregó un privilegio al rol ${req.params.idRol}!.`)
             }else if(response.nModified === 0 && response.n === 1){
                 result.Error = false
                 result.Response = 'No se realizo ningun cambio'
@@ -151,14 +151,15 @@ router.post('/:idRol/obtenerPrivilegios', AutenticationToken,function(req, res) 
 
 // Eliminar privilegio de un rol
 
-router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio',AutenticacionLv1, function(req, res) {
+router.delete('/:idRol/privilegios/:idPrivilegio/eliminarPrivilegio', function(req, res) {
     let result = Result.createResult();
-    rol.update({
-            _id: mongoose.Types.ObjectId(req.params.idRol)
+   
+    rol.updateOne({
+            _id: req.params.idRol
         }, {
             $pull: {
                 privilegios: {
-                    _id: mongoose.Types.ObjectId(req.params.idPrivilegio)
+                    $in: [{_id: req.params.idPrivilegio}]
                 }
             }
         })
