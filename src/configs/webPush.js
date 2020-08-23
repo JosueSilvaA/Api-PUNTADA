@@ -3,7 +3,7 @@ const PUBLIC_VAPID_KEY = 'BPpK_LkVR3q0qC1DcRlItVowAdR9Fdl_0T_FTbfNYUMuts5JfZ5oVx
 const PRIVATE_VAPID_KEY = 'tXg660IaaEnssH1IYDnAyDOuwvNQjZlFAWP3OgJ85Tc';
 
 webpush.setVapidDetails(
-  "mailto:test@faztweb.com",
+  "mailto:user@lapuntada.com",
   PUBLIC_VAPID_KEY,
   PRIVATE_VAPID_KEY
 );

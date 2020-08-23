@@ -1,38 +1,49 @@
 var express = require("express");
 const AutenticationToken = require("../middlewares/autenticationJWT");
 const router = express.Router();
-const Result = require("../helpers/result");
-const Usuario = require("../models/usuario");
-const estructuraBitacora = require("../helpers/esquemaBitacora");
-const decodeJWT = require("../configs/decodedJWT");
-const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
-const usuario = require("../models/usuario");
+const saveEndPoint = require('../helpers/saveEndPoint');
+const { sendNotification, sendAdminNotification } = require('../helpers/SendPushNotification')
+const endPointUsuario = require("../models/endPointUsuario");
+
 
 const webpush = require('../configs/webPush');
-let pushSubscripton;
 
-router.post("/subscribe/user", async (req, res) => {
-  pushSubscripton = req.body;
-  console.log(pushSubscripton);
-
+router.post("/subscribe/user", AutenticationToken, async (req, res) => {
+  let pushSubscripton = req.body;
+  await saveEndPoint(req.decoded.id,pushSubscripton);
   // Server's Response
+  // console.log(typeof(pushSubscripton))
+  // let temp = JSON.stringify(pushSubscripton)
+  // console.log(typeof(temp))
   res.status(201).json();
+  sendNotification(pushSubscripton, `Bienvenido ${req.decoded.user}!`, 'Saludos La Puntada.')
 });
 
 router.get("/new-message/:message", async (req, res) => {
   const { message } = req.body;
   // Payload Notification
-  const payload = JSON.stringify({
-    title: "My Custom Notification",
-    message: req.params.message,
+  const result = await endPointUsuario.findOne({usuario: '5f409481ea2ebc0017c54b2f' }, {userEndPoint: true})
+/*   const payload = JSON.stringify({
+    title: "Prueba de notificación",
+    message: message,
   });
-  res.send('ok');
   try {
-    await webpush.sendNotification(pushSubscripton, payload);
+    await webpush.sendNotification(result.userEndPoint, payload);
   } catch (error) {
     console.log(error);
-  }
+  };  */
+  // sendNotification(ent, 'prueba', 'esta es una prueba')
+  sendNotification(result.userEndPoint, 'Saludos', 'Saludos La Puntada.')
+  
+  res.send('ok');
 });
+
+router.get('/prueba', (req, res) => {
+  sendAdminNotification('Prueba', 'Notificación solo para admins!');
+  // sendNotification(ent, 'prueba', 'esta es una prueba')
+
+  res.send('ok')
+}) 
 
 
 module.exports = router;
