@@ -12,7 +12,7 @@ const fs = require("fs-extra");
 const estructuraBitacora = require("../helpers/esquemaBitacora");
 const decodeJWT = require("../configs/decodedJWT");
 const AutenticacionLv1 = require("../middlewares/autenticacionLvl1");
-const usuario = require("../models/usuario");
+const { sendAdminNotification, sendNotification } = require('../helpers/SendPushNotification');
 
 // Registrar usuario
 
@@ -45,6 +45,7 @@ router.post("/registroUsuario", AutenticacionLv1, async function (req, res) {
         "Gestion Usuarios",
         "USUARIOS"
       );
+      sendAdminNotification('La Puntada', `${req.decoded.user} ha registrado un nuevo usario.`)
     })
     .catch((err) => {
       if (err.keyValue.usuario) {
@@ -216,6 +217,7 @@ router.put("/:idUsuario/cambiarEstado", AutenticacionLv1, function (req, res) {
           "Gestion Usuarios",
           "USUARIOS"
         );
+        sendAdminNotification('La Puntada', `${req.decoded.user} eliminó un usario!.`)
       } else if (response.nModified === 0 && response.n === 1) {
         result.Error = false;
         result.Response = "No se realizo ningun cambio";
@@ -258,6 +260,7 @@ router.put("/:idUsuario/cambiarRol", AutenticacionLv1, function (req, res) {
           "Gestion Usuarios",
           "USUARIOS"
         );
+        sendAdminNotification('La Puntada', `Se cambió el rol del usuario ${req.params.idUsuario}.`)
       } else if (response.nModified === 0 && response.n === 1) {
         result.Error = false;
         result.Response = "No se realizo ningun cambio";
@@ -432,6 +435,7 @@ router.post(
               "Gestion Usuarios",
               "USUARIOS"
             );
+            sendNotification(req.decoded.id, 'La Puntada', 'Has modificado tu imagen de usuario!.')
           } else if (response.nModified === 0 && response.n === 1) {
             result.Error = false;
             result.Response = "No se realizo ningun cambio";
@@ -499,6 +503,7 @@ router.put("/cambiarContrasena/:idUser", AutenticationToken, async (req, res) =>
                   "Gestion Usuarios",
                   "USUARIOS"
                 );
+                sendNotification(req.decoded.id, 'La Puntada', 'Has modificado tu contraseña.')
             } else if (response.nModified === 0 && response.n === 1) {
               result.Error = false;
               result.Response = "No se realizo ningun cambio";

@@ -11,14 +11,15 @@ const getAdmins = async () => {
 }
 
 
-    const sendNotification = async (user, title, message) => {
+    const sendNotification = async (userId, title, message) => {
         // let userEnp = JSON.parse(user)
+        const userEP = await endPointUsuario.findOne({ usuario: userId }, { userEndPoint : true});
         const payload = JSON.stringify({
             title: title,
             message: message,
         });
         try {
-            await webpush.sendNotification(user, payload);
+            await webpush.sendNotification(userEP, payload);
         } catch (error) {
             console.log(error);
         }

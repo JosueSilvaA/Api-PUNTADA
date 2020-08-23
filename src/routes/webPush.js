@@ -16,7 +16,7 @@ router.post("/subscribe/user", AutenticationToken, async (req, res) => {
   // let temp = JSON.stringify(pushSubscripton)
   // console.log(typeof(temp))
   res.status(201).json();
-  sendNotification(pushSubscripton, `Bienvenido ${req.decoded.user}!`, 'Saludos La Puntada.')
+  sendNotification(req.decoded.id, `Bienvenido ${req.decoded.user}!`, 'Saludos La Puntada.')
 });
 
 router.get("/new-message/:message", async (req, res) => {
