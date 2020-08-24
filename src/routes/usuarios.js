@@ -242,44 +242,51 @@ router.put("/:idUsuario/cambiarEstado", AutenticacionLv1, function (req, res) {
 // Cambiar rol de un usuario
 
 router.put("/:idUsuario/cambiarRol", AutenticacionLv1, function (req, res) {
+
   let result = Result.createResult();
-  let token = decodeJWT(req.headers["access-token"]);
-  Usuario.updateOne(
-    {
-      _id: mongoose.Types.ObjectId(req.params.idUsuario),
-    },
-    {
-      rol: mongoose.Types.ObjectId(req.body.rol),
-    }
-  )
-    .then((response) => {
-      if (response.nModified === 1 && response.n === 1) {
-        result.Error = false;
-        result.Response = "Se cambio el rol del usuario";
-        res.send(result);
-        estructuraBitacora(
-          token.id,
-          req.params.idUsuario,
-          "Se modifico el rol del usuario",
-          "Gestion Usuarios",
-          "USUARIOS"
-        );
-        sendAdminNotification('La Puntada', `El administrador ${req.decoded.user} cambió el rol del usuario ${req.params.idUsuario}.`)
-      } else if (response.nModified === 0 && response.n === 1) {
-        result.Error = false;
-        result.Response = "No se realizo ningun cambio";
-        res.send(result);
-      } else {
-        result.Error = "Id Invalido";
-        result.Success = false;
-        res.send(result);
+  if(req.params.idUsuario === req.decoded.id){
+    result.Error = false;
+    result.Response = "No es permitido cambiarte el rol a ti mismo";
+    res.send(result);
+  }else{
+    let token = decodeJWT(req.headers["access-token"]);
+    Usuario.updateOne(
+      {
+        _id: mongoose.Types.ObjectId(req.params.idUsuario),
+      },
+      {
+        rol: mongoose.Types.ObjectId(req.body.rol),
       }
-    })
-    .catch((err) => {
-      result.Error = err;
-      result.Response = "Ocurrio un error";
-      res.send(result);
-    });
+    )
+      .then((response) => {
+        if (response.nModified === 1 && response.n === 1) {
+          result.Error = false;
+          result.Response = "Se cambio el rol del usuario";
+          res.send(result);
+          estructuraBitacora(
+            token.id,
+            req.params.idUsuario,
+            "Se modifico el rol del usuario",
+            "Gestion Usuarios",
+            "USUARIOS"
+          );
+          sendAdminNotification('La Puntada', `El administrador ${req.decoded.user} cambió el rol del usuario ${req.params.idUsuario}.`)
+        } else if (response.nModified === 0 && response.n === 1) {
+          result.Error = false;
+          result.Response = "No se realizo ningun cambio";
+          res.send(result);
+        } else {
+          result.Error = "Id Invalido";
+          result.Success = false;
+          res.send(result);
+        }
+      })
+      .catch((err) => {
+        result.Error = err;
+        result.Response = "Ocurrio un error";
+        res.send(result);
+      });
+  }
 });
 
 // Editar Usuario
