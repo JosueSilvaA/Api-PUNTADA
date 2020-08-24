@@ -245,7 +245,7 @@ router.put("/:idUsuario/cambiarRol", AutenticacionLv1, function (req, res) {
 
   let result = Result.createResult();
   if(req.params.idUsuario === req.decoded.id){
-    result.Error = false;
+    result.Error = true;
     result.Response = "No es permitido cambiarte el rol a ti mismo";
     res.send(result);
   }else{
