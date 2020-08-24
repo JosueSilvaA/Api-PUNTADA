@@ -80,6 +80,10 @@ router.post("/registroUsuario", AutenticacionLv1, async function (req, res) {
 router.post("/login", function (req, res) {
   var result = Result.createResult();
   Usuario.findOne({ usuario: req.body.usuario }, async (error, usuario) => {
+    if( usuario === null) {
+       result.Error = "Usuario o contraseña incorrecto";
+       return res.json(result);
+    }
     if (!usuario.estado) {
       result.Error = "No existe este usuario";
       return res.json(result);
