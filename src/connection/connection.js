@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 
 
-
 const URI = "mongodb+srv://silva:wI58OeWxGVx98coq@puntadadb.xffos.mongodb.net/puntadadb?retryWrites=true&w=majority"
 const connectDB = async () =>{
     await mongoose.connect(URI,{
